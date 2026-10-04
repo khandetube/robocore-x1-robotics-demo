@@ -106,7 +106,7 @@ function render(){
    faces.forEach((f,i)=>{const ps=f.map(j=>v[j]);const rr=ps.map(rot);const nz=((rr[1].x-rr[0].x)*(rr[2].y-rr[0].y)-(rr[1].y-rr[0].y)*(rr[2].x-rr[0].x));if(nz<0){const e=poly(ps,part.style,(rr.reduce((a,b)=>a+b.z,0)/4)+i*.001);els.push(e)}})
    } else if(part.type==='prism'){
    const v=part.data.vs, faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];
-   faces.forEach((f,i)=>{const ps=f.map(j=>v[j]);const rr=ps.map(rot);const nx=(rr[1].y-rr[0].y)*(rr[2].z-rr[0].z)-(rr[1].z-rr[0].z)*(rr[2].y-rr[0].y);const ny=(rr[1].z-rr[0].z)*(rr[2].x-rr[0].x)-(rr[1].x-rr[0].x)*(rr[2].z-rr[0].z);const nz=(rr[1].x-rr[0].x)*(rr[2].y-rr[0].y)-(rr[1].y-rr[0].y)*(rr[2].x-rr[0].x);if(nx*0+ny*0+nz<0){const e=poly(ps,part.style,rr.reduce((s,p)=>s+p.z,0)/4+i*.001);els.push(e)}})
+   faces.forEach((f,i)=>{const ps=f.map(j=>v[j]);const rr=ps.map(rot);const e=poly(ps,part.style,rr.reduce((s,p)=>s+p.z,0)/4+i*.001);els.push(e)})
   } else if(part.type==='cyl'){
    const n=20,top=[],bot=[];for(let i=0;i<n;i++){const a=i*2*Math.PI/n;top.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z+part.data.h/2));bot.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z-part.data.h/2))}
    els.push(poly(top,part.style,part.data.z+part.data.h/2));els.push(poly(bot,part.style,part.data.z-part.data.h/2));
@@ -129,7 +129,6 @@ svg.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;svg.s
 svg.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;yaw+=dx*.55;pitch=Math.max(-75,Math.min(75,pitch+dy*.55));render()});
 svg.addEventListener('pointerup',()=>drag=false);svg.addEventListener('pointercancel',()=>drag=false);
 let pinch=0;
-svg.addEventListener('pointerdown',e=>{if(e.isPrimary===false)return;});
 svg.addEventListener('touchstart',e=>{if(e.touches.length===2){pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)}},{passive:false});
 svg.addEventListener('touchmove',e=>{if(e.touches.length!==2)return;e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch){zoom=Math.max(.45,Math.min(1.8,zoom*(d/pinch)));render()}pinch=d},{passive:false});
 svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1.8,zoom*(e.deltaY<0?1.08:.93)));render()},{passive:false});
