@@ -69,6 +69,17 @@ function prop(cx,cy,cz,ang){
 const armPts=[[ -230,-230],[230,-230],[-230,230],[230,230]];
 armPts.forEach(([x,y],i)=>{rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');box('Motor cap '+(i+1),x,y,1,22,22,5,'#9a763c','#d7b45e');prop(x,y,5,i%2?Math.PI/2:0)});
 function bolt(name,x,y,z){cyl(name,x,y,z,3.2,4,'#9aa8ad','#dce4e7')}
+function motorHub(name,x,y,z){
+ cyl(name,x,y,z,15,8,'#27363c','#aeb9bd');
+ cyl(name+' shaft',x,y,z-7,6,14,'#b8c2c5','#e6ecee');
+}
+function wire(name,a,b,color){
+ rod(name,a,b,1.4,color,color);
+}
+function foot(name,x,y){
+ cyl(name,x,y,-121,13,8,'#202b30','#7d8b90');
+}
+
 function strap(name,x,y,z,w,h){box(name,x,y,z,w,h,4,'#343f45','#9aa6aa')}
 function escDetail(i,x,y){
  const sx=x*.72, sy=y*.72;
@@ -78,6 +89,10 @@ function escDetail(i,x,y){
  rod('ESC signal lead '+i,q(sx,sy,30),q(0,0,45),1.5,'#9aa0a4','#d5dde0');
 }
 armPts.forEach(([x,y],i)=>{
+ motorHub('Motor hub '+(i+1),x,y,-37);
+ foot('Landing foot '+(i+1),i<2?-95:95,0);
+ wire('Motor phase lead '+(i+1),q(x*.9,y*.9,-15),q(x*.72,y*.72,18),'#b24d4d');
+ wire('Arm signal cable '+(i+1),q(x*.82,y*.82,2),q(x*.35,y*.35,30),'#d0a54a');
  escDetail(i+1,x,y);
  const s=42;
  bolt('Motor bolt A'+(i+1),x-s/2,y-s/2,-1);
@@ -89,6 +104,8 @@ strap('Battery strap front',0,-25,92,158,7);
 strap('Battery strap rear',0,25,92,158,7);
 box('Battery tray',0,0,62,158,62,4,'#35444a','#93a0a5');
 box('XT60 connector',82,0,64,18,14,10,'#d39a32','#f0c86a');
+wire('Battery cable positive',q(75,0,64),q(20,0,47),'#c34d4d');
+wire('Battery cable negative',q(-75,0,64),q(-20,0,47),'#242b2e');
 box('Receiver',62,0,74,38,24,8,'#1e2d33','#68b7a9');
 rod('Receiver antenna',q(62,0,78),q(62,0,125),1.4,'#aeb8bc','#dfe5e7');
 bolt('FC standoff FL',-28,-18,49);bolt('FC standoff FR',28,-18,49);bolt('FC standoff RL',-28,18,49);bolt('FC standoff RR',28,18,49);
