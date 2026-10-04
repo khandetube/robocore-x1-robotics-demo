@@ -119,6 +119,18 @@ function applyJoints(){jointGroups[0].rotation.y=THREE.MathUtils.degToRad(+joint
 jointInputs.forEach(e=>e.addEventListener('input',applyJoints));document.getElementById('grip').addEventListener('input',()=>{document.getElementById('vg').textContent=document.getElementById('grip').value+'%';applyJoints()});applyJoints();
 
 let wire=false,explode=false,engineering=false,scanOn=true,t=0;
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+const selectable=[];
+robot.traverse(o=>{if(o.isMesh){o.userData.originalMaterial=o.material;selectable.push(o)}});
+const pickMaterial=new THREE.MeshBasicMaterial({color:0x55e5c0,wireframe:true,transparent:true,opacity:.9});
+renderer.domElement.addEventListener('pointerdown',e=>{
+  const r=renderer.domElement.getBoundingClientRect();
+  pointer.x=((e.clientX-r.left)/r.width)*2-1; pointer.y=-((e.clientY-r.top)/r.height)*2+1;
+  raycaster.setFromCamera(pointer,camera);
+  const hit=raycaster.intersectObjects(selectable,false)[0];
+  selectable.forEach(o=>{if(o.userData.selected){o.material=o.userData.originalMaterial;o.userData.selected=false}});
+  if(hit){hit.object.userData.selected=true;hit.object.material=pickMaterial}
+});
 document.getElementById('auto').onclick=()=>orbit.autoRotate=!orbit.autoRotate;
 document.getElementById('reset').onclick=()=>{jointInputs.forEach((e,i)=>e.value=initial[i]);document.getElementById('grip').value=35;applyJoints();camera.position.set(3.6,2.55,4.5);orbit.target.set(0,.9,0)};
 document.getElementById('wire').onclick=()=>{wire=!wire;robot.traverse(o=>{if(o.isMesh&&o.material)o.material.wireframe=wire})};
