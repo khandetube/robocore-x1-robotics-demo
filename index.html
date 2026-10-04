@@ -82,7 +82,7 @@ rod('Landing right',q(70,0,0),q(95,0,-120),6,'#71838b');
 
 function rot(p){
  // One rigid-body transform around the assembly center. Every vertex uses this same pivot.
- const pivotZ=20;
+ const pivotZ=0;
  let x0=p.x,y0=p.y,z0=p.z-pivotZ;
  let cy=Math.cos(yaw*Math.PI/180),sy=Math.sin(yaw*Math.PI/180),cp=Math.cos(pitch*Math.PI/180),sp=Math.sin(pitch*Math.PI/180),cr=Math.cos(roll*Math.PI/180),sr=Math.sin(roll*Math.PI/180);
  let x=x0*cy-y0*sy,y=x0*sy+y0*cy,z=z0;
@@ -91,8 +91,9 @@ function rot(p){
  return {x:xx,y:yy2,z:zz+pivotZ};
 }
 function P(p){
- const r=rot(p), f=650, s=f/(f+r.z*1.2);
- return {x:C+r.x*s*scale0*zoom,y:CY-r.y*s*scale0*zoom,z:r.z};
+ const r=rot(p);
+ // Orthographic projection keeps one global scale for the whole rigid assembly.
+ return {x:C+r.x*scale0*zoom,y:CY-r.y*scale0*zoom,z:r.z};
 }
 function poly(points,style,depth){
  const e=document.createElementNS(NS,'polygon');e.setAttribute('points',points.map(P).map(a=>a.x+','+a.y).join(' '));for(const[k,v]of Object.entries(style))e.setAttribute(k,v);e.dataset.depth=depth;return e;
@@ -124,14 +125,6 @@ function render(){
   }
  }
  els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
- // Propellers are part of the same depth-sorted rigid assembly, so they can never drift away from their motors.
- armPts.forEach(([x,y],i)=>{
-   const a=i%2?Math.PI/2:0, d=190, w=6;
-   const dx=Math.cos(a)*d,dy=Math.sin(a)*d, vx=-Math.sin(a),vy=Math.cos(a);
-   const bladeA=[q(x-dx*.95+vx*w,y-dy*.95+vy*w,5),q(x+dx*.35+vx*w*.65,y+dy*.35+vy*w*.65,5),q(x+dx*.95,y+dy*.95,5),q(x+dx*.35-vx*w*.65,y+dy*.35-vy*w*.65,5),q(x-dx*.95-vx*w,y-dy*.95-vy*w,5)];
-   const bladeB=[q(x-dy*.95+vx*w,y+dx*.95+vy*w,5),q(x-dy*.35+vx*w*.65,y+dx*.35+vy*w*.65,5),q(x+dy*.95,y-dx*.95,5),q(x+dy*.35-vx*w*.65,y-dx*.35-vy*w*.65,5),q(x+dy*.95,y-dx*.95,5)];
-   els.push(poly(bladeA,{fill:'#26343a',stroke:'#c2cdd1'},5),poly(bladeB,{fill:'#26343a',stroke:'#c2cdd1'},5));
- });
  els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
 }
 function tick(){if(auto){yaw+=.45;render()}requestAnimationFrame(tick)}
@@ -142,7 +135,7 @@ let pinch=0;
 svg.addEventListener('touchstart',e=>{if(e.touches.length===2){pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)}},{passive:false});
 svg.addEventListener('touchmove',e=>{if(e.touches.length!==2)return;e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch){zoom=Math.max(.45,Math.min(1.8,zoom*(d/pinch)));render()}pinch=d},{passive:false});
 svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1.8,zoom*(e.deltaY<0?1.08:.93)));render()},{passive:false});
-document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
+document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE RIGID 3D • ORTHOGRAPHIC ASSEMBLY'};
 document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ROTATION • TRUE PROJECTED 3D':'TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
 document.getElementById('cad').onclick=()=>{state.textContent='CAD VIEW • PARTS SHARE ONE 3D COORDINATE SYSTEM'};
 state.textContent='TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY';render();tick();
