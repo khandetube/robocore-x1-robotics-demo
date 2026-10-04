@@ -66,7 +66,7 @@ function prop(cx,cy,cz,ang){
  add('prop',{cx,cy,cz,dx,dy,w},{fill:'none',stroke:'#c2cdd1'});
 }
 const armPts=[[ -230,-230],[230,-230],[-230,230],[230,230]];
-armPts.forEach(([x,y],i)=>{rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');prop(x,y,5,i%2?Math.PI/2:0)});
+armPts.forEach(([x,y],i)=>{rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');/* propellers rendered below in the same rigid/depth-sorted pass */});
 box('Lower carbon plate',0,0,0,160,160,5,'#18242a','#81939a');
 box('Upper carbon plate',0,0,28,160,160,5,'#2b3b42','#a0afb4');
 box('Battery',0,0,70,150,55,40,'#151f25','#d0a84f');
