@@ -76,7 +76,7 @@ const groups={chassis:new THREE.Group(),power:new THREE.Group(),lidar:new THREE.
 
 function mesh(g,name,geo,mat,pos=[0,0,0],rot=[0,0,0]){const o=new THREE.Mesh(geo,mat);o.name=name;o.position.set(...pos);o.rotation.set(...rot);o.castShadow=true;o.receiveShadow=true;g.add(o);return o}
 function box(g,n,s,p,m=mats.body,r=[0,0,0]){return mesh(g,n,new THREE.BoxGeometry(...s),m,p,r)}
-function cyl(g,n,r,d,p,m=mats.metal,seg=24,r=[0,0,0]){return mesh(g,n,new THREE.CylinderGeometry(r,r,d,seg),m,p,r)}
+function cyl(g,n,rad,d,p,m=mats.metal,seg=24,rot=[0,0,0]){return mesh(g,n,new THREE.CylinderGeometry(rad,rad,d,seg),m,p,rot)}
 function bolt(g,p){cyl(g,'fastener',.025,.035,p,mats.metal,12,[Math.PI/2,0,0])}
 function wheel(x,z){const w=cyl(groups.chassis,'drive wheel',.34,.23,[x,.36,z],mats.rubber,36,[Math.PI/2,0,0]);cyl(groups.chassis,'hub motor',.14,.25,[x,.36,z],mats.metal,24,[Math.PI/2,0,0]);cyl(groups.chassis,'hub cap',.075,.27,[x,.36,z],mats.cyan,20,[Math.PI/2,0,0]);return w}
 
