@@ -8,53 +8,80 @@
 .static3d{position:absolute;inset:0;background:#04080b}.static3d svg{width:100%;height:100%;display:block;cursor:grab}.static3d svg:active{cursor:grabbing}.viewerState{position:absolute;left:14px;top:52px;z-index:5;padding:7px 10px;border:1px solid #29414c;border-radius:7px;background:#071018;color:#55e5c0;font:10px monospace}</style></head><body><header><div class="brand"><div class="logo">AQ</div><div><b>AEROQUAD X4</b><small>BUILDABLE QUADCOPTER DIGITAL TWIN</small></div></div><div class="status">● SIMULATION / ENGINEERING MODE</div></header>
 <main><section class="hero"><div class="ey">PHYSICAL-BUILD-ORIENTED DESIGN</div><h1>AeroQuad X4 — 650 mm Modular Quadcopter</h1><p>A complete engineering-oriented quadcopter concept: carbon-fiber frame, four propulsion modules, ESCs, flight controller, GPS/compass, power distribution, battery tray, landing gear, camera payload bay and serviceable fasteners. Every major assembly is separated so the model can be inspected and manufactured from the stated dimensions.</p></section>
 <div class="layout"><section class="viewer" id="viewer">
-<div class="static3d" aria-label="AeroQuad X4 3D viewer">
-<svg id="quadSvg" viewBox="0 0 900 650" role="img">
+<div class="static3d" aria-label="AeroQuad X4 engineering viewer">
+<svg id="quadSvg" viewBox="0 0 1000 700" role="img">
 <defs>
-<linearGradient id="gCarbon" x1="0" x2="1"><stop offset="0" stop-color="#18242b"/><stop offset="1" stop-color="#3b4c55"/></linearGradient>
-<linearGradient id="gGold" x1="0" x2="1"><stop offset="0" stop-color="#9a6820"/><stop offset="1" stop-color="#e5b65a"/></linearGradient>
-<filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <linearGradient id="carbon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#53656d"/><stop offset=".45" stop-color="#172329"/><stop offset="1" stop-color="#070c10"/></linearGradient>
+ <linearGradient id="carbon2" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#344850"/><stop offset="1" stop-color="#0b1217"/></linearGradient>
+ <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dce6e9"/><stop offset=".45" stop-color="#65757c"/><stop offset="1" stop-color="#1b252a"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3cf76"/><stop offset=".45" stop-color="#a36d1e"/><stop offset="1" stop-color="#50300c"/></linearGradient>
+ <linearGradient id="pcb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#28a989"/><stop offset=".5" stop-color="#0c5549"/><stop offset="1" stop-color="#071b1a"/></linearGradient>
+ <filter id="shadow"><feGaussianBlur stdDeviation="12"/></filter>
+ <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
 </defs>
-<rect width="900" height="650" fill="#04080b"/>
-<g id="grid" opacity=".55" stroke="#18303a" stroke-width="1">
-<path d="M80 520H820M100 480H800M120 440H780M140 400H760M160 360H740"/>
-<path d="M170 350L90 520M270 350L220 520M370 350L350 520M470 350L480 520M570 350L610 520M670 350L740 520M770 350L870 520"/>
+<rect width="1000" height="700" fill="#030609"/>
+<g opacity=".32" stroke="#1b343e" stroke-width="1">
+<path d="M80 520L280 365"/><path d="M185 520L335 365"/><path d="M290 520L390 365"/><path d="M395 520L445 365"/><path d="M500 520L500 365"/><path d="M605 520L555 365"/><path d="M710 520L610 365"/><path d="M815 520L665 365"/><path d="M920 520L720 365"/>
+<path d="M120 520H880"/><path d="M120 495H880"/><path d="M120 470H880"/><path d="M120 445H880"/><path d="M120 420H880"/><path d="M120 395H880"/><path d="M120 370H880"/>
 </g>
-<g id="drone" transform="translate(450 320)">
-<ellipse cx="0" cy="145" rx="300" ry="38" fill="#000" opacity=".45"/>
-<g stroke="#667a83" stroke-width="16" stroke-linecap="round">
-<line x1="-55" y1="-10" x2="-260" y2="-135"/><line x1="55" y1="-10" x2="260" y2="-135"/>
-<line x1="-55" y1="10" x2="-260" y2="135"/><line x1="55" y1="10" x2="260" y2="135"/>
+<ellipse cx="500" cy="560" rx="350" ry="58" fill="#000" opacity=".65" filter="url(#shadow)"/>
+<g id="drone">
+<!-- landing gear -->
+<g fill="none" stroke="#5c6d74" stroke-width="12" stroke-linecap="round"><path d="M360 405L315 535H385"/><path d="M640 405L685 535H615"/></g>
+<g fill="#111a1f" stroke="#83939a" stroke-width="3"><ellipse cx="350" cy="535" rx="62" ry="9"/><ellipse cx="650" cy="535" rx="62" ry="9"/></g>
+<!-- arms with structural caps -->
+<g stroke="#11191e" stroke-width="32" stroke-linecap="round">
+<path d="M445 350L215 205"/><path d="M555 350L785 205"/><path d="M445 385L215 530"/><path d="M555 385L785 530"/>
 </g>
-<g stroke="#17242a" stroke-width="6">
-<line x1="-55" y1="-10" x2="-260" y2="-135"/><line x1="55" y1="-10" x2="260" y2="-135"/>
-<line x1="-55" y1="10" x2="-260" y2="135"/><line x1="55" y1="10" x2="260" y2="135"/>
+<g stroke="url(#carbon)" stroke-width="22" stroke-linecap="round">
+<path d="M445 350L215 205"/><path d="M555 350L785 205"/><path d="M445 385L215 530"/><path d="M555 385L785 530"/>
 </g>
-<g fill="#111b21" stroke="#d7a94e" stroke-width="4">
-<circle cx="-260" cy="-135" r="31"/><circle cx="260" cy="-135" r="31"/><circle cx="-260" cy="135" r="31"/><circle cx="260" cy="135" r="31"/>
+<g stroke="#6d7f86" stroke-width="2" opacity=".8">
+<path d="M430 341L220 208"/><path d="M570 341L780 208"/><path d="M430 394L220 527"/><path d="M570 394L780 527"/>
 </g>
-<g stroke="#b9c7cc" stroke-width="5" opacity=".9">
-<ellipse cx="-260" cy="-135" rx="72" ry="12"/><ellipse cx="260" cy="-135" rx="72" ry="12"/>
-<ellipse cx="-260" cy="135" rx="72" ry="12"/><ellipse cx="260" cy="135" rx="72" ry="12"/>
+<!-- motor modules -->
+<g stroke="#26373f" stroke-width="5" fill="#111a1f">
+ <g transform="translate(210 202)"><circle r="38"/><circle r="27" fill="url(#metal)"/><circle r="9" fill="#202d33"/><circle r="32" fill="none" stroke="#c9a34d" stroke-width="3" stroke-dasharray="3 7"/><path d="M-14-33L14-33M-14 33L14 33M-33-14L-33 14M33-14L33 14"/></g>
+ <g transform="translate(790 202)"><circle r="38"/><circle r="27" fill="url(#metal)"/><circle r="9" fill="#202d33"/><circle r="32" fill="none" stroke="#c9a34d" stroke-width="3" stroke-dasharray="3 7"/><path d="M-14-33L14-33M-14 33L14 33M-33-14L-33 14M33-14L33 14"/></g>
+ <g transform="translate(210 533)"><circle r="38"/><circle r="27" fill="url(#metal)"/><circle r="9" fill="#202d33"/><circle r="32" fill="none" stroke="#c9a34d" stroke-width="3" stroke-dasharray="3 7"/><path d="M-14-33L14-33M-14 33L14 33M-33-14L-33 14M33-14L33 14"/></g>
+ <g transform="translate(790 533)"><circle r="38"/><circle r="27" fill="url(#metal)"/><circle r="9" fill="#202d33"/><circle r="32" fill="none" stroke="#c9a34d" stroke-width="3" stroke-dasharray="3 7"/><path d="M-14-33L14-33M-14 33L14 33M-33-14L-33 14M33-14L33 14"/></g>
 </g>
-<polygon points="-125,-82 125,-82 145,0 95,82 -95,82 -145,0" fill="url(#gCarbon)" stroke="#9eb0b7" stroke-width="4"/>
-<polygon points="-110,-62 110,-62 124,0 80,62 -80,62 -124,0" fill="#0d171d" stroke="#31454e" stroke-width="3"/>
-<rect x="-48" y="-28" width="96" height="56" rx="8" fill="#d5a447" stroke="#f0c86c" stroke-width="3"/>
-<rect x="-34" y="-17" width="68" height="34" rx="5" fill="#16252b"/>
-<rect x="-28" y="35" width="56" height="12" rx="4" fill="#55e5c0"/>
-<circle cx="0" cy="-115" r="28" fill="#14252d" stroke="#55e5c0" stroke-width="4"/>
-<circle cx="0" cy="-115" r="12" fill="#55e5c0" filter="url(#glow)"/>
-<rect x="-70" y="80" width="140" height="45" rx="10" fill="#d5a447" stroke="#f0c86c" stroke-width="3"/>
-<rect x="-38" y="125" width="76" height="42" rx="8" fill="#18242b" stroke="#65747c" stroke-width="3"/>
-<circle cx="0" cy="168" r="22" fill="#0c1419" stroke="#55e5c0" stroke-width="3"/>
-<g fill="#8095a2" font-family="monospace" font-size="14"><text x="-315" y="-175">M1</text><text x="275" y="-175">M2</text><text x="-315" y="175">M3</text><text x="275" y="175">M4</text><text x="-55" y="15" fill="#e4ad4d">6S 5000mAh</text></g>
+<!-- propellers -->
+<g fill="none" stroke="#aebbc1" stroke-width="5" opacity=".9">
+<ellipse cx="210" cy="202" rx="92" ry="13"/><ellipse cx="210" cy="202" rx="13" ry="92"/>
+<ellipse cx="790" cy="202" rx="92" ry="13"/><ellipse cx="790" cy="202" rx="13" ry="92"/>
+<ellipse cx="210" cy="533" rx="92" ry="13"/><ellipse cx="210" cy="533" rx="13" ry="92"/>
+<ellipse cx="790" cy="533" rx="92" ry="13"/><ellipse cx="790" cy="533" rx="13" ry="92"/>
 </g>
-<g font-family="system-ui,Arial" fill="#dce5e9"><text x="30" y="42" font-size="20" font-weight="700">AeroQuad X4</text><text x="30" y="68" fill="#55e5c0" font-size="12">650 mm MODULAR QUADCOPTER • BUILD VIEW</text></g>
+<!-- center lower plate -->
+<polygon points="390,330 500,290 610,330 650,395 610,460 500,495 390,460 350,395" fill="#050a0e" stroke="#73848b" stroke-width="5"/>
+<polygon points="405,337 500,304 595,337 630,395 595,448 500,480 405,448 370,395" fill="url(#carbon)" stroke="#202f36" stroke-width="4"/>
+<!-- upper plate -->
+<polygon points="405,310 500,280 595,310 625,365 595,420 500,450 405,420 375,365" fill="url(#carbon2)" stroke="#a2b0b5" stroke-width="4"/>
+<!-- standoffs -->
+<g fill="url(#metal)" stroke="#202c31" stroke-width="2"><circle cx="405" cy="337" r="7"/><circle cx="595" cy="337" r="7"/><circle cx="405" cy="448" r="7"/><circle cx="595" cy="448" r="7"/><circle cx="420" cy="315" r="6"/><circle cx="580" cy="315" r="6"/></g>
+<!-- battery -->
+<g transform="translate(500 255)"><rect x="-78" y="-32" width="156" height="64" rx="10" fill="#1b252b" stroke="#c2943e" stroke-width="3"/><rect x="-65" y="-20" width="130" height="40" rx="6" fill="#10171c" stroke="#4d6068"/><path d="M78-10H96M78 10H96" stroke="#d8b15c" stroke-width="6"/><text text-anchor="middle" y="5" fill="#d7e1e4" font-size="13" font-family="monospace">6S 5000mAh</text></g>
+<!-- PDB + FC stack -->
+<g><rect x="450" y="330" width="100" height="58" rx="7" fill="url(#gold)" stroke="#f0cc73" stroke-width="3"/><rect x="462" y="342" width="76" height="34" rx="4" fill="#0b1718" stroke="#55e5c0"/><circle cx="474" cy="354" r="3" fill="#55e5c0"/><circle cx="526" cy="364" r="3" fill="#55e5c0"/>
+<rect x="462" y="397" width="76" height="48" rx="5" fill="url(#pcb)" stroke="#7ce7cf" stroke-width="2"/><path d="M470 410h60M470 420h40M480 432h38" stroke="#8cefe0" opacity=".7"/><circle cx="474" cy="438" r="3" fill="#d5b04e"/><circle cx="526" cy="405" r="3" fill="#d5b04e"/></g>
+<!-- GPS mast -->
+<path d="M500 280V155" stroke="#aab7bc" stroke-width="6"/><path d="M500 165L485 150M500 165L515 150" stroke="#66767d" stroke-width="3"/><ellipse cx="500" cy="145" rx="36" ry="11" fill="#17242a" stroke="#55e5c0" stroke-width="3"/><circle cx="500" cy="141" r="9" fill="#55e5c0"/>
+<!-- camera/gimbal -->
+<g transform="translate(500 465)"><path d="M-48 8Q0-18 48 8L38 55H-38Z" fill="#202c32" stroke="#8a9aa1" stroke-width="3"/><circle cx="0" cy="20" r="27" fill="#071015" stroke="#55e5c0" stroke-width="4"/><circle cx="0" cy="20" r="13" fill="#1a4c50"/><circle cx="-4" cy="16" r="5" fill="#bdebe5"/><path d="M-58 55H58" stroke="#c69d45" stroke-width="7"/></g>
+<!-- wiring -->
+<g fill="none" stroke="#c88d35" stroke-width="3" opacity=".9"><path d="M430 350L330 290L235 220"/><path d="M570 350L670 290L765 220"/><path d="M430 420L330 465L235 515"/><path d="M570 420L670 465L765 515"/></g>
+<!-- labels -->
+<g font-family="system-ui,Arial" font-size="12" fill="#b8c6cb">
+<text x="120" y="120" fill="#55e5c0" font-size="18" font-weight="700">AeroQuad X4</text><text x="120" y="142">650 mm / 15 in / 6S</text>
+<text x="145" y="190">M1 • 3510 MOTOR</text><text x="735" y="190">M2 • 3510 MOTOR</text><text x="145" y="570">M3 • 3510 MOTOR</text><text x="735" y="570">M4 • 3510 MOTOR</text>
+<text x="548" y="365" fill="#55e5c0">PDB</text><text x="548" y="426" fill="#55e5c0">FC</text><text x="540" y="142" fill="#55e5c0">GNSS / COMPASS</text><text x="540" y="500" fill="#e4ad4d">2-AXIS GIMBAL / CAMERA</text>
+</g>
+</g>
 </svg>
-<div id="loadState" class="viewerState">3D VIEWER: ONLINE • NO EXTERNAL LIBRARIES</div>
-<div class="hud"><span class="chip">NATIVE SVG 3D-STYLE VIEW • DRAG / 360°</span><div class="tools"><button id="reset">Reset</button><button id="auto">Auto Orbit</button><button id="explode">Explode</button><button id="wire">Wire</button><button id="axes">Axes</button><button id="spin">Motors</button></div><div class="hint">Drag = rotate · wheel = zoom · standalone viewer</div></div>
-</div>
-<aside class="side">
+<div id="loadState" class="viewerState">ENGINEERING VIEW • 28 ASSEMBLY FEATURES</div>
+<div class="hud"><span class="chip">ENGINEERING DIGITAL TWIN • 650 MM • 15 IN • 6S</span><div class="tools"><button id="reset">Reset</button><button id="auto">Auto Orbit</button><button id="explode">Exploded</button><button id="wire">Wiring</button><button id="axes">Reference</button><button id="spin">Propulsion</button></div><div class="hint">Drag = rotate perspective · wheel = zoom · interactive assembly</div></div>
+</div><aside class="side">
 <div class="panel"><h2>Flight Telemetry</h2><div class="grid"><div class="metric"><label>Battery</label><strong id="bat">84.7%</strong><small> 6S / 22.2 V</small></div><div class="metric"><label>Current</label><strong id="cur">18.4 A</strong><small> simulated</small></div><div class="metric"><label>Altitude</label><strong id="alt">12.6 m</strong><small> AGL</small></div><div class="metric"><label>Speed</label><strong id="spd">6.8 m/s</strong><small> ground</small></div><div class="metric"><label>Motor RPM</label><strong id="rpm">2860</strong><small> average</small></div><div class="metric"><label>CPU</label><strong id="cpu">41°C</strong><small> FC</small></div></div></div>
 <div class="panel"><h2>Flight Controls</h2><div class="controls">
 <div class="rowc"><span>Roll</span><input id="roll" type="range" min="-30" max="30" value="0"><span class="val" id="vr">0°</span></div>
@@ -67,18 +94,19 @@
 <section class="footer"><div class="card"><h3>Build Specification</h3><p>Four 3510-class motors, 40–50 A ESCs, 6S battery, 20×20 mm flight-controller stack, GPS/compass mast, XT60/XT90 power path, serviceable carbon plates and M3/M4 hardware. Geometry is intentionally dimensioned as a buildable prototype rather than decorative blocks.</p><div><span class="tag">M3 hardware</span><span class="tag">M4 arm bolts</span><span class="tag">15-inch props</span><span class="tag">6S power</span><span class="tag">GNSS</span><span class="tag">FC stack</span></div></div><div class="card"><h3>Architecture</h3><p>Battery → PDB → 4 ESC → motors. FC → ESC signal. GPS/compass → FC. Camera/gimbal → payload rail. All assemblies are independently inspectable.</p></div><div class="card"><h3>Scope</h3><p>Digital twin for engineering/portfolio use. Dimensions are a coherent prototype specification, not certified aerospace drawings or a flight-approved design.</p></div></section></main>
 <script>
 (function(){
-const svg=document.getElementById('quadSvg'),drone=document.getElementById('drone');let rx=0,ry=0,scale=1,down=false,lx=0,auto=false,explode=false;
-function apply(){drone.setAttribute('transform',`translate(450 320) rotate(${ry} 0 0) scale(${scale})`);}
+const svg=document.getElementById('quadSvg'),drone=document.getElementById('drone'),wire=document.querySelector('#drone g[fill="none"]');let yaw=0,scale=1,down=false,lx=0,auto=false,explode=false;
+function apply(){drone.setAttribute('transform','translate(0 '+(explode?-18:0)+') rotate('+yaw+' 500 365) scale('+scale+')');}
 svg.addEventListener('pointerdown',e=>{down=true;lx=e.clientX;svg.setPointerCapture(e.pointerId)});
-svg.addEventListener('pointermove',e=>{if(!down)return;ry+=(e.clientX-lx)*.35;lx=e.clientX;apply()});
+svg.addEventListener('pointermove',e=>{if(!down)return;yaw+=(e.clientX-lx)*.35;lx=e.clientX;apply()});
 svg.addEventListener('pointerup',()=>down=false);
-svg.addEventListener('wheel',e=>{e.preventDefault();scale=Math.max(.7,Math.min(1.35,scale*(e.deltaY<0?1.06:.94)));apply()},{passive:false});
-document.getElementById('reset').onclick=()=>{ry=0;scale=1;apply()};
+svg.addEventListener('pointercancel',()=>down=false);
+svg.addEventListener('wheel',e=>{e.preventDefault();scale=Math.max(.72,Math.min(1.28,scale*(e.deltaY<0?1.06:.94)));apply()},{passive:false});
+document.getElementById('reset').onclick=()=>{yaw=0;scale=1;explode=false;apply()};
 document.getElementById('auto').onclick=()=>auto=!auto;
-document.getElementById('explode').onclick=()=>{explode=!explode;drone.style.transform=explode?'translateY(-12px) scale(1.05)':''};
-document.getElementById('wire').onclick=e=>{svg.style.filter=svg.style.filter?'':'grayscale(1) contrast(1.3)'};
-document.getElementById('axes').onclick=()=>document.getElementById('loadState').textContent='AXES: X / Y / Z • ENGINEERING REFERENCE';
-document.getElementById('spin').onclick=()=>document.getElementById('loadState').textContent='PROPULSION: 4 × 3510 CLASS • 15 IN PROPS';
-function loop(){if(auto){ry+=.25;apply()}requestAnimationFrame(loop)}apply();loop();
+document.getElementById('explode').onclick=()=>{explode=!explode;document.getElementById('loadState').textContent=explode?'EXPLODED ASSEMBLY • SERVICE ACCESS VIEW':'ENGINEERING VIEW • 28 ASSEMBLY FEATURES';apply()};
+document.getElementById('wire').onclick=()=>{wire.style.opacity=wire.style.opacity==='0'?'0.9':'0'};
+document.getElementById('axes').onclick=()=>{document.getElementById('loadState').textContent='REFERENCE: X LONGITUDINAL • Y VERTICAL • Z LATERAL'};
+document.getElementById('spin').onclick=()=>{document.getElementById('loadState').textContent='PROPULSION: 4×3510 • 45A ESC • 15 IN PROPS • 6S'};
+function loop(){if(auto){yaw+=.18;apply()}requestAnimationFrame(loop)}apply();loop();
 })();
 </script></main></body></html>
