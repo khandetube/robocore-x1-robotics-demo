@@ -67,16 +67,16 @@ function prop(cx,cy,cz,ang){
  add('prop',{cx,cy,cz,dx,dy,w},{fill:'none',stroke:'#c2cdd1'});
 }
 const armPts=[[ -230,-230],[230,-230],[-230,230],[230,230]];
-armPts.forEach(([x,y],i)=>{rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');prop(x,y,5,i%2?Math.PI/2:0)});
+armPts.forEach(([x,y],i)=>{rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');box('Motor cap '+(i+1),x,y,1,22,22,5,'#9a763c','#d7b45e');prop(x,y,5,i%2?Math.PI/2:0)});
 box('Lower carbon plate',0,0,0,160,160,5,'#18242a','#81939a');
 box('Upper carbon plate',0,0,28,160,160,5,'#2b3b42','#a0afb4');
 box('Battery',0,0,70,150,55,40,'#151f25','#d0a84f');
-box('PDB',0,0,43,95,55,8,'#9d7025','#e3c46b');
+box('PDB',0,0,43,95,55,8,'#9d7025','#e3c46b');box('PDB terminal',0,0,49,42,18,5,'#3a4a50','#aab8bd');
 box('Flight controller',0,0,54,76,45,8,'#116553','#70e4cf');
 rod('GPS mast',q(0,0,30),q(0,0,120),4,'#9daeb5');
 cyl('GNSS compass',0,0,130,30,12,'#17242a','#55e5c0');
 box('Payload rail',0,0,-48,180,12,12,'#c69b42','#e0c278');
-box('Camera body',0,0,-78,82,58,55,'#202d33','#89999f');
+box('Camera body',0,0,-78,82,58,55,'#202d33','#89999f');box('Camera top plate',0,0,-50,58,38,4,'#35474e','#8fa0a7');
 cyl('Camera lens',0,-31,-78,24,14,'#071216','#55e5c0');
 rod('Landing left',q(-70,0,0),q(-95,0,-120),6,'#71838b');
 rod('Landing right',q(70,0,0),q(95,0,-120),6,'#71838b');
