@@ -124,8 +124,12 @@ function render(){
    const e=poly([p1,p2,p3,p4],{fill:'#26343a',stroke:part.style.stroke},d.cz);els.push(e);
   }
  }
- els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
- els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
+ els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));
+ els.forEach(e=>root.appendChild(e));
+ const pv=P(q(0,0,0)), g=document.createElementNS(NS,'g'), h=document.createElementNS(NS,'circle');
+ h.setAttribute('cx',pv.x);h.setAttribute('cy',pv.y);h.setAttribute('r',4);
+ h.setAttribute('fill','#55e5c0');h.setAttribute('stroke','#021014');h.setAttribute('stroke-width','2');
+ g.appendChild(h);root.appendChild(g);
 }
 function tick(){if(auto){yaw+=.45;render()}requestAnimationFrame(tick)}
 svg.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;svg.setPointerCapture(e.pointerId)});
@@ -138,7 +142,7 @@ svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1
 document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE RIGID 3D • ORTHOGRAPHIC ASSEMBLY'};
 document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ROTATION • TRUE PROJECTED 3D':'TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
 document.getElementById('cad').onclick=()=>{state.textContent='CAD VIEW • PARTS SHARE ONE 3D COORDINATE SYSTEM'};
-state.textContent='TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY';render();tick();
+state.textContent='TRUE RIGID 3D • SINGLE PIVOT';render();tick();
 })();
 </script>
 </body></html>
