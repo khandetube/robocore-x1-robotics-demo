@@ -38,6 +38,7 @@ main{max-width:1500px;margin:auto;padding:16px}.hero h1{margin:0 0 4px;font-size
 const NS='http://www.w3.org/2000/svg', svg=document.getElementById('scene'), root=document.getElementById('model3d'), state=document.getElementById('state');
 const V=1000, C=500, CY=365, scale0=0.72;
 let yaw=-35,pitch=22,roll=0,zoom=1,drag=false,lx=0,ly=0,auto=false;
+// All geometry is transformed as one rigid body around the origin; no screen-space transforms are used.
 const parts=[];
 const add=(type,data,style={})=>parts.push({type,data,style});
 const q=(x,y,z)=>({x,y,z});
@@ -82,7 +83,7 @@ rod('Landing right',q(70,0,0),q(95,0,-120),6,'#71838b');
 
 function rot(p){
  // One rigid-body transform around the assembly center. Every vertex uses this same pivot.
- const pivotZ=20;
+ const pivotZ=0;
  let x0=p.x,y0=p.y,z0=p.z-pivotZ;
  let cy=Math.cos(yaw*Math.PI/180),sy=Math.sin(yaw*Math.PI/180),cp=Math.cos(pitch*Math.PI/180),sp=Math.sin(pitch*Math.PI/180),cr=Math.cos(roll*Math.PI/180),sr=Math.sin(roll*Math.PI/180);
  let x=x0*cy-y0*sy,y=x0*sy+y0*cy,z=z0;
@@ -91,8 +92,9 @@ function rot(p){
  return {x:xx,y:yy2,z:zz+pivotZ};
 }
 function P(p){
- const r=rot(p), f=650, s=f/(f+r.z*1.2);
- return {x:C+r.x*s*scale0*zoom,y:CY-r.y*s*scale0*zoom,z:r.z};
+ const r=rot(p);
+ // Orthographic projection: preserves the exact rigid-body spacing while rotating.
+ return {x:C+r.x*scale0*zoom,y:CY-r.y*scale0*zoom,z:r.z};
 }
 function poly(points,style,depth){
  const e=document.createElementNS(NS,'polygon');e.setAttribute('points',points.map(P).map(a=>a.x+','+a.y).join(' '));for(const[k,v]of Object.entries(style))e.setAttribute(k,v);e.dataset.depth=depth;return e;
