@@ -78,9 +78,54 @@
 <text x="548" y="365" fill="#55e5c0">PDB</text><text x="548" y="426" fill="#55e5c0">FC</text><text x="540" y="142" fill="#55e5c0">GNSS / COMPASS</text><text x="540" y="500" fill="#e4ad4d">2-AXIS GIMBAL / CAMERA</text>
 </g>
 </g>
-</svg>
+<g id="cadOverlay" pointer-events="none">
+  <g fill="none" stroke="#55e5c0" stroke-width="2" opacity=".9">
+    <path d="M210 610H790"/><path d="M210 602V618M790 602V618"/>
+    <path d="M210 610l14-6M210 610l14 6M790 610l-14-6M790 610l-14 6"/>
+    <path d="M110 202V533"/><path d="M102 202H118M102 533H118"/>
+    <path d="M110 202l-6 14M110 202l6 14M110 533l-6-14M110 533l6-14"/>
+  </g>
+  <g fill="#55e5c0" font-family="monospace" font-size="12">
+    <text x="458" y="635">650.0 mm MOTOR-TO-MOTOR</text>
+    <text x="48" y="375" transform="rotate(-90 48 375)">650.0 mm</text>
+  </g>
+  <g fill="none" stroke="#9eafb5" stroke-width="1.5" opacity=".7">
+    <circle cx="500" cy="395" r="20"/><circle cx="500" cy="395" r="48"/>
+    <path d="M480 395h40M500 375v40"/>
+    <path d="M450 328H550M450 447H550"/>
+  </g>
+  <g fill="#9eafb5" font-family="monospace" font-size="10">
+    <text x="565" y="334">100×58 PDB</text><text x="565" y="450">20×20 FC STACK</text>
+    <text x="515" y="384">Ø20</text>
+  </g>
+</g>
+<g id="detailOverlay" pointer-events="none">
+  <!-- motor fasteners -->
+  <g fill="#d9e2e5" stroke="#38474d" stroke-width="1">
+    <circle cx="194" cy="186" r="4"/><circle cx="226" cy="186" r="4"/><circle cx="194" cy="218" r="4"/><circle cx="226" cy="218" r="4"/>
+    <circle cx="774" cy="186" r="4"/><circle cx="806" cy="186" r="4"/><circle cx="774" cy="218" r="4"/><circle cx="806" cy="218" r="4"/>
+    <circle cx="194" cy="517" r="4"/><circle cx="226" cy="517" r="4"/><circle cx="194" cy="549" r="4"/><circle cx="226" cy="549" r="4"/>
+    <circle cx="774" cy="517" r="4"/><circle cx="806" cy="517" r="4"/><circle cx="774" cy="549" r="4"/><circle cx="806" cy="549" r="4"/>
+  </g>
+  <!-- arm service clamps -->
+  <g fill="none" stroke="#b8c6cb" stroke-width="3">
+    <path d="M292 255l20-30M708 255l-20-30M292 480l20 30M708 480l-20 30"/>
+  </g>
+  <!-- ESC modules -->
+  <g>
+    <rect x="305" y="265" width="42" height="18" rx="3" fill="#121d22" stroke="#55e5c0"/>
+    <rect x="653" y="265" width="42" height="18" rx="3" fill="#121d22" stroke="#55e5c0"/>
+    <rect x="305" y="482" width="42" height="18" rx="3" fill="#121d22" stroke="#55e5c0"/>
+    <rect x="653" y="482" width="42" height="18" rx="3" fill="#121d22" stroke="#55e5c0"/>
+    <g fill="#55e5c0"><circle cx="314" cy="274" r="2"/><circle cx="338" cy="274" r="2"/><circle cx="662" cy="274" r="2"/><circle cx="686" cy="274" r="2"/><circle cx="314" cy="491" r="2"/><circle cx="338" cy="491" r="2"/><circle cx="662" cy="491" r="2"/><circle cx="686" cy="491" r="2"/></g>
+  </g>
+  <!-- battery straps -->
+  <path d="M440 230V280M560 230V280" stroke="#b68b38" stroke-width="8" opacity=".9"/>
+  <!-- payload rail -->
+  <path d="M410 505H590" stroke="#c99d45" stroke-width="6"/><circle cx="430" cy="505" r="4" fill="#dfe7e9"/><circle cx="570" cy="505" r="4" fill="#dfe7e9"/>
+</g></svg>
 <div id="loadState" class="viewerState">ENGINEERING VIEW • 28 ASSEMBLY FEATURES</div>
-<div class="hud"><span class="chip">ENGINEERING DIGITAL TWIN • 650 MM • 15 IN • 6S</span><div class="tools"><button id="reset">Reset</button><button id="auto">Auto Orbit</button><button id="explode">Exploded</button><button id="wire">Wiring</button><button id="axes">Reference</button><button id="spin">Propulsion</button></div><div class="hint">Drag = rotate perspective · wheel = zoom · interactive assembly</div></div>
+<div class="hud"><span class="chip">ENGINEERING DIGITAL TWIN • 650 MM • 15 IN • 6S</span><div class="tools"><button id="reset">Reset</button><button id="auto">Auto Orbit</button><button id="explode">Exploded</button><button id="wire">Wiring</button><button id="axes">Reference</button><button id="spin">Propulsion</button><button id="cad">CAD Detail</button></div><div class="hint">Drag = rotate perspective · wheel = zoom · interactive assembly</div></div>
 </div><aside class="side">
 <div class="panel"><h2>Flight Telemetry</h2><div class="grid"><div class="metric"><label>Battery</label><strong id="bat">84.7%</strong><small> 6S / 22.2 V</small></div><div class="metric"><label>Current</label><strong id="cur">18.4 A</strong><small> simulated</small></div><div class="metric"><label>Altitude</label><strong id="alt">12.6 m</strong><small> AGL</small></div><div class="metric"><label>Speed</label><strong id="spd">6.8 m/s</strong><small> ground</small></div><div class="metric"><label>Motor RPM</label><strong id="rpm">2860</strong><small> average</small></div><div class="metric"><label>CPU</label><strong id="cpu">41°C</strong><small> FC</small></div></div></div>
 <div class="panel"><h2>Flight Controls</h2><div class="controls">
@@ -91,7 +136,7 @@
 <div class="panel"><h2>Subsystem Inspection</h2><div class="parts">
 <div class="part" data-f="frame"><b>FRAME</b><span>Arms / plates / standoffs</span></div><div class="part" data-f="prop"><b>PROPULSION</b><span>4 motors + props + ESC</span></div><div class="part" data-f="power"><b>POWER</b><span>6S LiPo + PDB + BEC</span></div><div class="part" data-f="fc"><b>FLIGHT CTRL</b><span>IMU / MCU / telemetry</span></div><div class="part" data-f="gps"><b>GPS</b><span>GNSS + compass mast</span></div><div class="part" data-f="camera"><b>CAMERA</b><span>3-axis payload mount</span></div></div></div>
 <div class="panel"><h2>Millimeter Engineering</h2><div class="spec"><div><span>Overall motor-to-motor</span><b>650.0 mm</b></div><div><span>Arm tube</span><b>16×16×1.5 mm</b></div><div><span>Center plate</span><b>160×160×2.5 mm</b></div><div><span>Motor mount</span><b>42×42×2.0 mm</b></div><div><span>Stack hole pattern</span><b>20×20 mm</b></div><div><span>Prop diameter</span><b>381.0 mm</b></div></div></div><div class="panel"><h2>Manufacturing Envelope</h2><div class="spec"><div><span>Wheelbase / motor span</span><b>650 mm</b></div><div><span>Propeller</span><b>15 × 5.5 in</b></div><div><span>Frame plate</span><b>2.5 mm CF</b></div><div><span>Arm section</span><b>16 × 16 mm CF</b></div><div><span>Battery</span><b>6S 5000 mAh</b></div><div><span>Target AUW</span><b>2.1–2.6 kg</b></div><div><span>Payload concept</span><b>≤ 0.7 kg</b></div></div></div></aside></div>
-<section class="footer"><div class="card"><h3>Build Specification</h3><p>Four 3510-class motors, 40–50 A ESCs, 6S battery, 20×20 mm flight-controller stack, GPS/compass mast, XT60/XT90 power path, serviceable carbon plates and M3/M4 hardware. Geometry is intentionally dimensioned as a buildable prototype rather than decorative blocks.</p><div><span class="tag">M3 hardware</span><span class="tag">M4 arm bolts</span><span class="tag">15-inch props</span><span class="tag">6S power</span><span class="tag">GNSS</span><span class="tag">FC stack</span></div></div><div class="card"><h3>Architecture</h3><p>Battery → PDB → 4 ESC → motors. FC → ESC signal. GPS/compass → FC. Camera/gimbal → payload rail. All assemblies are independently inspectable.</p></div><div class="card"><h3>Scope</h3><p>Digital twin for engineering/portfolio use. Dimensions are a coherent prototype specification, not certified aerospace drawings or a flight-approved design.</p></div></section></main>
+<section class="footer"><div class="card"><h3>Engineering BOM</h3><div class="spec"><div><span>01 • Frame</span><b>2× CF plates + 4 arms</b></div><div><span>02 • Propulsion</span><b>4× 3510 + 15 in</b></div><div><span>03 • ESC</span><b>4× 40–50 A</b></div><div><span>04 • Power</span><b>6S 5000 mAh + PDB</b></div><div><span>05 • Avionics</span><b>20×20 FC + GNSS</b></div><div><span>06 • Payload</span><b>Rail + gimbal + camera</b></div></div></div><div class="card"><h3>Build Specification</h3><p>Four 3510-class motors, 40–50 A ESCs, 6S battery, 20×20 mm flight-controller stack, GPS/compass mast, XT60/XT90 power path, serviceable carbon plates and M3/M4 hardware. Geometry is intentionally dimensioned as a buildable prototype rather than decorative blocks.</p><div><span class="tag">M3 hardware</span><span class="tag">M4 arm bolts</span><span class="tag">15-inch props</span><span class="tag">6S power</span><span class="tag">GNSS</span><span class="tag">FC stack</span></div></div><div class="card"><h3>Architecture</h3><p>Battery → PDB → 4 ESC → motors. FC → ESC signal. GPS/compass → FC. Camera/gimbal → payload rail. All assemblies are independently inspectable.</p></div><div class="card"><h3>Scope</h3><p>Digital twin for engineering/portfolio use. Dimensions are a coherent prototype specification, not certified aerospace drawings or a flight-approved design.</p></div></section></main>
 <script>
 (function(){
 const svg=document.getElementById('quadSvg'),drone=document.getElementById('drone'),wire=document.querySelector('#drone g[fill="none"]');
@@ -116,7 +161,7 @@ document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'
 document.getElementById('explode').onclick=()=>{explode=!explode;state.textContent=explode?'EXPLODED ASSEMBLY • SERVICE ACCESS VIEW':'ENGINEERING VIEW • 28 ASSEMBLY FEATURES';apply()};
 document.getElementById('wire').onclick=()=>{wire.style.opacity=wire.style.opacity==='0'?'0.9':'0';state.textContent=wire.style.opacity==='0'?'WIRING HIDDEN':'WIRING HARNESS • POWER + SIGNAL ROUTES'};
 document.getElementById('axes').onclick=()=>{state.textContent='REFERENCE FRAME • X LONGITUDINAL / Y VERTICAL / Z LATERAL'};
-document.getElementById('spin').onclick=()=>{state.textContent='PROPULSION • 4×3510 / 45A ESC / 15 IN / 6S'};
+document.getElementById('spin').onclick=()=>{state.textContent='PROPULSION • 4×3510 / 45A ESC / 15 IN / 6S'}; document.getElementById('cad').onclick=()=>{const o=document.getElementById('cadOverlay'),d=document.getElementById('detailOverlay'); const on=o.style.opacity!=='1'; o.style.opacity=on?'1':'0'; d.style.opacity=on?'1':'0'; state.textContent=on?'CAD DETAIL • DIMENSIONS + FASTENERS + ESC + BOM':'ENGINEERING VIEW • 28 ASSEMBLY FEATURES';};
 const controls={roll:['vr','°'],pitch:['vp','°'],yaw:['vy','°'],thr:['vt','%']};
 Object.keys(controls).forEach(id=>{
  const el=document.getElementById(id); if(!el)return;
