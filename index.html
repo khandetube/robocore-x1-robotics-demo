@@ -25,7 +25,7 @@ main{max-width:1500px;margin:auto;padding:16px}.hero h1{margin:0 0 4px;font-size
 <g id="model3d"></g>
 </svg>
 <div class="overlay"><div class="badge" id="state">STATIC SVG MODEL • 28 ASSEMBLY FEATURES</div><div class="tools"><button id="reset">Reset</button><button id="auto">Auto</button><button id="cad">CAD</button></div></div>
-<div class="hint">Drag = rotate · Wheel / pinch = zoom · model remains visible without JavaScript</div>
+<div class="hint">Drag = rigid-body 3D rotate · Wheel / pinch = zoom · all parts share one pivot</div>
 </section>
 <aside class="side">
 <div class="panel"><h2>Telemetry</h2><div class="grid"><div class="metric"><small>Battery</small><b>84.7%</b><small>6S / 22.2V</small></div><div class="metric"><small>Current</small><b>18.4A</b><small>simulated</small></div><div class="metric"><small>Altitude</small><b>12.6m</b><small>AGL</small></div><div class="metric"><small>RPM</small><b>2860</b><small>average</small></div></div></div>
@@ -81,11 +81,14 @@ rod('Landing left',q(-70,0,0),q(-95,0,-120),6,'#71838b');
 rod('Landing right',q(70,0,0),q(95,0,-120),6,'#71838b');
 
 function rot(p){
+ // One rigid-body transform around the assembly center. Every vertex uses this same pivot.
+ const pivotZ=20;
+ let x0=p.x,y0=p.y,z0=p.z-pivotZ;
  let cy=Math.cos(yaw*Math.PI/180),sy=Math.sin(yaw*Math.PI/180),cp=Math.cos(pitch*Math.PI/180),sp=Math.sin(pitch*Math.PI/180),cr=Math.cos(roll*Math.PI/180),sr=Math.sin(roll*Math.PI/180);
- let x=p.x*cy-p.y*sy,y=p.x*sy+p.y*cy,z=p.z;
+ let x=x0*cy-y0*sy,y=x0*sy+y0*cy,z=z0;
  let yy=y*cp-z*sp,zz=y*sp+z*cp;y=yy;z=zz;
  let xx=x*cr-y*sr,yy2=x*sr+y*cr;
- return {x:xx,y:yy2,z:zz};
+ return {x:xx,y:yy2,z:zz+pivotZ};
 }
 function P(p){
  const r=rot(p), f=650, s=f/(f+r.z*1.2);
@@ -121,8 +124,15 @@ function render(){
   }
  }
  els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
- // propeller blades as separate, correctly attached to each motor center
- armPts.forEach(([x,y],i)=>{const a=i%2?Math.PI/2:0;const d=190,w=6;const dx=Math.cos(a)*d,dy=Math.sin(a)*d;root.appendChild(line(q(x-dx,y-dy,5),q(x+dx,y+dy,5),{stroke:'#c2cdd1','stroke-width':3,'stroke-linecap':'round'}));root.appendChild(line(q(x-dy*.75,y+dx*.75,5),q(x+dy*.75,y-dx*.75,5),{stroke:'#c2cdd1','stroke-width':3,'stroke-linecap':'round'}));});
+ // Propellers are part of the same depth-sorted rigid assembly, so they can never drift away from their motors.
+ armPts.forEach(([x,y],i)=>{
+   const a=i%2?Math.PI/2:0, d=190, w=6;
+   const dx=Math.cos(a)*d,dy=Math.sin(a)*d, vx=-Math.sin(a),vy=Math.cos(a);
+   const bladeA=[q(x-dx*.95+vx*w,y-dy*.95+vy*w,5),q(x+dx*.35+vx*w*.65,y+dy*.35+vy*w*.65,5),q(x+dx*.95,y+dy*.95,5),q(x+dx*.35-vx*w*.65,y+dy*.35-vy*w*.65,5),q(x-dx*.95-vx*w,y-dy*.95-vy*w,5)];
+   const bladeB=[q(x-dy*.95+vx*w,y+dx*.95+vy*w,5),q(x-dy*.35+vx*w*.65,y+dx*.35+vy*w*.65,5),q(x+dy*.95,y-dx*.95,5),q(x+dy*.35-vx*w*.65,y-dx*.35-vy*w*.65,5),q(x+dy*.95,y-dx*.95,5)];
+   els.push(poly(bladeA,{fill:'#26343a',stroke:'#c2cdd1'},5),poly(bladeB,{fill:'#26343a',stroke:'#c2cdd1'},5));
+ });
+ els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
 }
 function tick(){if(auto){yaw+=.45;render()}requestAnimationFrame(tick)}
 svg.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;svg.setPointerCapture(e.pointerId)});
