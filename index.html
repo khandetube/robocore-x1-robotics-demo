@@ -107,8 +107,7 @@ function render(){
    els.push(poly(top,part.style,part.data.z+part.data.h/2));els.push(poly(bot,part.style,part.data.z-part.data.h/2));
   } else if(part.type==='prop'){
    const d=part.data, a=Math.atan2(d.dy,d.dx),px=Math.cos(a+Math.PI/2)*d.w,py=Math.sin(a+Math.PI/2)*d.w;
-   els.push(line(q(d.cx-d.dx,d.cy-d.dy,d.cz),q(d.cx+d.dx,d.cy+d.dy,d.cz),{stroke:d.style.stroke,'stroke-width':3,'stroke-linecap':'round'}));
-   els.push(line(q(d.cx-dy?0:0,d.cy,d.cz),q(d.cx,d.cy,d.cz),{stroke:'none'}));
+   els.push(line(q(d.cx-d.dx,d.cy-d.dy,d.cz),q(d.cx+d.dx,d.cy+d.dy,d.cz),{stroke:part.style.stroke,'stroke-width':3,'stroke-linecap':'round'}));
   } else if(part.type==='prism'){}
  }
  els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
