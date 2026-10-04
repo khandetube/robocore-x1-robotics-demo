@@ -125,6 +125,7 @@ wire('Battery cable positive',q(75,0,64),q(20,0,47),'#c34d4d');
 wire('Battery cable negative',q(-75,0,64),q(-20,0,47),'#242b2e');
 box('Receiver',62,0,74,38,24,8,'#1e2d33','#68b7a9');
 rod('Receiver antenna',q(62,0,78),q(62,0,125),1.4,'#aeb8bc','#dfe5e7');
+wire('Receiver signal lead',q(48,0,78),q(24,0,60),'#55b7a5');
 bolt('FC standoff FL',-28,-18,49);bolt('FC standoff FR',28,-18,49);bolt('FC standoff RL',-28,18,49);bolt('FC standoff RR',28,18,49);
 box('MCU shield',0,0,60,48,28,3,'#68777c','#aab5b9');
 box('GNSS base',0,0,112,42,42,5,'#29383e','#75868d');
@@ -139,8 +140,16 @@ box('Upper carbon plate',0,0,28,160,160,5,'#2b3b42','#a0afb4');
 [[-68,-68],[68,-68],[-68,68],[68,68]].forEach((p,i)=>bolt('Plate bolt '+(i+1),p[0],p[1],31));
 box('Battery',0,0,70,150,55,40,'#151f25','#d0a84f');
 box('PDB',0,0,43,95,55,8,'#9d7025','#e3c46b');box('PDB terminal',0,0,49,42,18,5,'#3a4a50','#aab8bd');
+box('PDB positive terminal',32,0,49,12,12,6,'#b53f3f','#e58b8b');
+box('PDB negative terminal',-32,0,49,12,12,6,'#222b2f','#aeb8bd');
+wire('PDB positive bus',q(38,0,52),q(72,0,52),'#d04b4b');
+wire('PDB negative bus',q(-38,0,52),q(-72,0,52),'#30373a');
+bolt('PDB terminal +',32,0,53);
+bolt('PDB terminal -',-32,0,53);
 box('BEC module',0,32,46,34,18,7,'#27373d','#9aa9ae'); wire('BEC lead',q(0,32,50),q(0,15,48),'#d0a54a');
 box('Flight controller',0,0,54,76,45,8,'#116553','#70e4cf');
+wire('FC power lead',q(0,-22,58),q(0,-38,50),'#d0a54a');
+wire('FC GPS signal',q(0,20,60),q(0,0,105),'#55b7a5');
 rod('GPS mast',q(0,0,30),q(0,0,120),4,'#9daeb5');
 cyl('GNSS compass',0,0,130,30,12,'#17242a','#55e5c0');
 // GNSS dome ribs / receiver detail
@@ -225,7 +234,7 @@ svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1
 document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE RIGID 3D • ORTHOGRAPHIC ASSEMBLY'};
 document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ROTATION • TRUE PROJECTED 3D':'TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
 document.getElementById('cad').onclick=()=>{state.textContent='CAD VIEW • PARTS SHARE ONE 3D COORDINATE SYSTEM'};
-state.textContent='TRUE RIGID 3D • MECHANICAL DETAIL PASS • SHARED PIVOT';render();tick();
+state.textContent='TRUE RIGID 3D • POWER & AVIONICS DETAIL PASS • SHARED PIVOT';render();tick();
 })();
 </script>
 </body></html>
