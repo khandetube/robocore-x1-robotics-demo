@@ -27,3 +27,7 @@ Three.js, WebGL, JavaScript, HTML/CSS, GitHub Pages.
 
 ## Extension path
 A production-oriented evolution could replace the simulation loop with ROS/WebSocket state, real joint states, streamed LiDAR point clouds, navigation status and persistent mission telemetry.
+
+
+## Build status
+Interactive 3D viewer and GitHub Pages deployment are being assembled in this repository.
