@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AeroQuad X4 | Engineering Viewer</title>
-<!-- LIVE_BUILD: 2026-10-04-rigid-pivot-v3 -->
+<!-- LIVE_BUILD: 2026-10-04-mechanical-detail-v4 -->
 <style>
 *{box-sizing:border-box}body{margin:0;background:#05090d;color:#e9f2f5;font:14px system-ui,Arial,sans-serif}
 header{height:60px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;background:#081119;border-bottom:1px solid #20313a}
@@ -69,6 +69,7 @@ function prop(cx,cy,cz,ang){
 const armPts=[[ -230,-230],[230,-230],[-230,230],[230,230]];
 armPts.forEach(([x,y],i)=>{rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');box('Motor cap '+(i+1),x,y,1,22,22,5,'#9a763c','#d7b45e');
 for(let k=0;k<4;k++){const a=k*Math.PI/2;bolt('Motor cap bolt '+(i+1)+'-'+(k+1),x+Math.cos(a)*14,y+Math.sin(a)*14,4);}
+for(let k=0;k<8;k++){const a=k*Math.PI/4;wire('Motor ventilation '+(i+1)+'-'+(k+1),q(x+Math.cos(a)*25,y+Math.sin(a)*25,-1),q(x+Math.cos(a)*29,y+Math.sin(a)*29,-1),'#66777d');}
 prop(x,y,5,i%2?Math.PI/2:0)});
 function bolt(name,x,y,z){cyl(name,x,y,z,3.2,4,'#9aa8ad','#dce4e7')}
 function motorHub(name,x,y,z){
@@ -107,6 +108,7 @@ armPts.forEach(([x,y],i)=>{
  foot('Landing foot '+(i+1),x*.38,y*.38);
  wire('Motor phase lead '+(i+1),q(x*.9,y*.9,-15),q(x*.72,y*.72,18),'#b24d4d');
  wire('Arm signal cable '+(i+1),q(x*.82,y*.82,2),q(x*.35,y*.35,30),'#d0a54a');
+ wire('ESC signal branch '+(i+1),q(x*.72,y*.72,30),q(x*.45,y*.45,34),'#55b7a5');
  escDetail(i+1,x,y);
  const s=42;
  bolt('Motor bolt A'+(i+1),x-s/2,y-s/2,-1);
@@ -223,7 +225,7 @@ svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1
 document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE RIGID 3D • ORTHOGRAPHIC ASSEMBLY'};
 document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ROTATION • TRUE PROJECTED 3D':'TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
 document.getElementById('cad').onclick=()=>{state.textContent='CAD VIEW • PARTS SHARE ONE 3D COORDINATE SYSTEM'};
-state.textContent='TRUE RIGID 3D • SINGLE ASSEMBLY TRANSFORM • SHARED PIVOT';render();tick();
+state.textContent='TRUE RIGID 3D • MECHANICAL DETAIL PASS • SHARED PIVOT';render();tick();
 })();
 </script>
 </body></html>
