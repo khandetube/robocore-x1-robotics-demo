@@ -14,9 +14,9 @@ main{max-width:1500px;margin:auto;padding:16px}.hero h1{margin:0 0 4px;font-size
 @media(max-width:1000px){.layout{grid-template-columns:1fr}.viewer{height:600px}}@media(max-width:600px){.viewer{height:500px}.tools button:nth-child(n+4){display:none}}
 </style></head>
 <body>
-<header><div class="brand">AEROQUAD X4<small>650 MM MODULAR QUADCOPTER • STATIC-SAFE SVG ENGINEERING VIEWER</small></div><div class="ok">● VIEWER ONLINE</div></header>
+<header><div class="brand">AEROQUAD X4<small>650 MM MODULAR QUADCOPTER • TRUE PROJECTED 3D ASSEMBLY • TOUCH + MOUSE</small></div><div class="ok">● VIEWER ONLINE</div></header>
 <main>
-<section class="hero"><h1>Engineering Digital Twin</h1><p>Visible-first SVG assembly. No WebGL, Canvas, external libraries or external model files are required for the model to appear.</p></section>
+<section class="hero"><h1>Engineering Digital Twin</h1><p>Native SVG projected-3D assembly. Every structural part is regenerated from one shared 3D coordinate system; the UI remains fixed.</p></section>
 <div class="layout">
 <section class="viewer" id="viewer">
 <svg id="scene" viewBox="0 0 1000 700" aria-label="AeroQuad X4 true projected 3D viewer">
@@ -48,11 +48,15 @@ function box(name,cx,cy,cz,w,h,d,fill,stroke='#8ea0a7'){
 function rod(name,a,b,r,fill,stroke='#65777f'){
  const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,L=Math.hypot(dx,dy,dz)||1;
  const ux=dx/L,uy=dy/L,uz=dz/L;
- let ax=Math.abs(uz)<.9?0:1, ay=Math.abs(uz)<.9?0:1, az=Math.abs(uz)<.9?1:0;
- let vx=uy*az-uz*ay,vy=uz*ax-ux*az,vz=ux*ay-uy*ax,vl=Math.hypot(vx,vy,vz)||1;vx/=vl;vy/=vl;vz/=vl;
- let wx=uy*vz-uz*vy,wy=uz*vx-ux*vz,wz=ux*vy-uy*vx,wl=Math.hypot(wx,wy,wz)||1;wx/=wl;wy/=wl;wz/=wl;
- const n=(s,t)=>q((a.x+b.x)/2+vx*r*s+wx*r*t,(a.y+b.y)/2+vy*r*s+wy*r*t,(a.z+b.z)/2+vz*r*s+wz*r*t);
- add('prism',{name,L,vs:[n(-1,-1),n(1,-1),n(1,1),n(-1,1),q(a.x+vx*r+wx*r,a.y+vy*r+wy*r,a.z+vz*r+wz*r),q(a.x-vx*r+wx*r,a.y-vy*r+wy*r,a.z-vz*r+wz*r)]},{fill,stroke});
+ let bx=0,by=0,bz=1;
+ if(Math.abs(uz)>.9){bx=1;by=0;bz=0}
+ let vx=uy*bz-uz*by,vy=uz*bx-ux*bz,vz=ux*by-uy*bx,vl=Math.hypot(vx,vy,vz)||1;
+ vx/=vl;vy/=vl;vz/=vl;
+ let wx=uy*vz-uz*vy,wy=uz*vx-ux*vz,wz=ux*vy-uy*vx;
+ const r2=r;
+ const A=[],B=[];
+ for(let i=0;i<4;i++){const t=i*Math.PI/2,cs=Math.cos(t)*r2,sn=Math.sin(t)*r2;A.push(q(a.x+vx*cs+wx*sn,a.y+vy*cs+wy*sn,a.z+vz*cs+wz*sn));B.push(q(b.x+vx*cs+wx*sn,b.y+vy*cs+wy*sn,b.z+vz*cs+wz*sn))}
+ add('prism',{name,L,vs:[...A,...B]},{fill,stroke});
 }
 function cyl(name,x,y,z,r,h,fill,stroke='#93a3a9'){
  add('cyl',{name,x,y,z,r,h},{fill,stroke});
@@ -100,15 +104,21 @@ function render(){
   if(part.type==='box'){
    const v=part.data.vs, faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[4,0,3,7]];
    faces.forEach((f,i)=>{const ps=f.map(j=>v[j]);const rr=ps.map(rot);const nz=((rr[1].x-rr[0].x)*(rr[2].y-rr[0].y)-(rr[1].y-rr[0].y)*(rr[2].x-rr[0].x));if(nz<0){const e=poly(ps,part.style,(rr.reduce((a,b)=>a+b.z,0)/4)+i*.001);els.push(e)}})
-  } else if(part.type==='prism'){
-   const v=part.data.vs; const e=poly(v.slice(0,4),part.style,v.reduce((a,b)=>a+rot(b).z,0)/4);els.push(e);
+   } else if(part.type==='prism'){
+   const v=part.data.vs, faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];
+   faces.forEach((f,i)=>{const ps=f.map(j=>v[j]);const rr=ps.map(rot);const nx=(rr[1].y-rr[0].y)*(rr[2].z-rr[0].z)-(rr[1].z-rr[0].z)*(rr[2].y-rr[0].y);const ny=(rr[1].z-rr[0].z)*(rr[2].x-rr[0].x)-(rr[1].x-rr[0].x)*(rr[2].z-rr[0].z);const nz=(rr[1].x-rr[0].x)*(rr[2].y-rr[0].y)-(rr[1].y-rr[0].y)*(rr[2].x-rr[0].x);if(nx*0+ny*0+nz<0){const e=poly(ps,part.style,rr.reduce((s,p)=>s+p.z,0)/4+i*.001);els.push(e)}})
   } else if(part.type==='cyl'){
    const n=20,top=[],bot=[];for(let i=0;i<n;i++){const a=i*2*Math.PI/n;top.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z+part.data.h/2));bot.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z-part.data.h/2))}
    els.push(poly(top,part.style,part.data.z+part.data.h/2));els.push(poly(bot,part.style,part.data.z-part.data.h/2));
-  } else if(part.type==='prop'){
-   const d=part.data, a=Math.atan2(d.dy,d.dx),px=Math.cos(a+Math.PI/2)*d.w,py=Math.sin(a+Math.PI/2)*d.w;
-   els.push(line(q(d.cx-d.dx,d.cy-d.dy,d.cz),q(d.cx+d.dx,d.cy+d.dy,d.cz),{stroke:part.style.stroke,'stroke-width':3,'stroke-linecap':'round'}));
-  } else if(part.type==='prism'){}
+   for(let i=0;i<n;i++){const j=(i+1)%n;const rr=[top[i],top[j],bot[j],bot[i]];els.push(poly(rr,part.style,(rot(top[i]).z+rot(top[j]).z+rot(bot[i]).z+rot(bot[j]).z)/4))}
+
+   } else if(part.type==='prop'){
+   const d=part.data,a=Math.atan2(d.dy,d.dx),L=Math.hypot(d.dx,d.dy);
+   const ux=Math.cos(a),uy=Math.sin(a),vx=-uy,vy=ux;
+   const p1=q(d.cx-d.dx*.92+vx*d.w,d.cy-d.dy*.92+vy*d.w,d.cz),p2=q(d.cx+d.dx*.92+vx*d.w,d.cy+d.dy*.92+vy*d.w,d.cz);
+   const p3=q(d.cx+d.dx*.92-vx*d.w,d.cy+d.dy*.92-vy*d.w,d.cz),p4=q(d.cx-d.dx*.92-vx*d.w,d.cy-d.dy*.92-vy*d.w,d.cz);
+   const e=poly([p1,p2,p3,p4],{fill:'#26343a',stroke:part.style.stroke},d.cz);els.push(e);
+  }
  }
  els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
  // propeller blades as separate, correctly attached to each motor center
@@ -118,6 +128,10 @@ function tick(){if(auto){yaw+=.45;render()}requestAnimationFrame(tick)}
 svg.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;svg.setPointerCapture(e.pointerId)});
 svg.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;yaw+=dx*.55;pitch=Math.max(-75,Math.min(75,pitch+dy*.55));render()});
 svg.addEventListener('pointerup',()=>drag=false);svg.addEventListener('pointercancel',()=>drag=false);
+let pinch=0;
+svg.addEventListener('pointerdown',e=>{if(e.isPrimary===false)return;});
+svg.addEventListener('touchstart',e=>{if(e.touches.length===2){pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)}},{passive:false});
+svg.addEventListener('touchmove',e=>{if(e.touches.length!==2)return;e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch){zoom=Math.max(.45,Math.min(1.8,zoom*(d/pinch)));render()}pinch=d},{passive:false});
 svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1.8,zoom*(e.deltaY<0?1.08:.93)));render()},{passive:false});
 document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
 document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ROTATION • TRUE PROJECTED 3D':'TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
