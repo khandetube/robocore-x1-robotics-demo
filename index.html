@@ -35,39 +35,47 @@ main{max-width:1500px;margin:auto;padding:16px}.hero h1{margin:0 0 4px;font-size
 </aside></div></main>
 <script>
 (()=> {
-const NS='http://www.w3.org/2000/svg', svg=document.getElementById('scene'), root=document.getElementById('model3d'), state=document.getElementById('state');
-const V=1000, C=500, CY=365, scale0=0.72;
+const NS='http://www.w3.org/2000/svg';
+const svg=document.getElementById('scene'),root=document.getElementById('model3d'),state=document.getElementById('state');
+const C=500,CY=365,SCALE=.72;
 let yaw=-35,pitch=22,roll=0,zoom=1,drag=false,lx=0,ly=0,auto=false;
-// All geometry is transformed as one rigid body around the origin; no screen-space transforms are used.
 const parts=[];
-const add=(type,data,style={})=>parts.push({type,data,style});
 const q=(x,y,z)=>({x,y,z});
+const add=(type,data,style={})=>parts.push({type,data,style});
+
 function box(name,cx,cy,cz,w,h,d,fill,stroke='#8ea0a7'){
- const x=w/2,y=h/2,z=d/2, vs=[q(cx-x,cy-y,cz-z),q(cx+x,cy-y,cz-z),q(cx+x,cy+y,cz-z),q(cx-x,cy+y,cz-z),q(cx-x,cy-y,cz+z),q(cx+x,cy-y,cz+z),q(cx+x,cy+y,cz+z),q(cx-x,cy+y,cz+z)];
- add('box',{name,vs}, {fill,stroke});
+ const X=w/2,Y=h/2,Z=d/2;
+ add('box',{name,vs:[
+  q(cx-X,cy-Y,cz-Z),q(cx+X,cy-Y,cz-Z),q(cx+X,cy+Y,cz-Z),q(cx-X,cy+Y,cz-Z),
+  q(cx-X,cy-Y,cz+Z),q(cx+X,cy-Y,cz+Z),q(cx+X,cy+Y,cz+Z),q(cx-X,cy+Y,cz+Z)
+ ]},{fill,stroke});
 }
 function rod(name,a,b,r,fill,stroke='#65777f'){
  const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,L=Math.hypot(dx,dy,dz)||1;
  const ux=dx/L,uy=dy/L,uz=dz/L;
- let bx=0,by=0,bz=1;
- if(Math.abs(uz)>.9){bx=1;by=0;bz=0}
+ let bx=0,by=0,bz=1;if(Math.abs(uz)>.9){bx=1;by=0;bz=0}
  let vx=uy*bz-uz*by,vy=uz*bx-ux*bz,vz=ux*by-uy*bx,vl=Math.hypot(vx,vy,vz)||1;
  vx/=vl;vy/=vl;vz/=vl;
- let wx=uy*vz-uz*vy,wy=uz*vx-ux*vz,wz=ux*vy-uy*vx;
- const r2=r;
- const A=[],B=[];
- for(let i=0;i<4;i++){const t=i*Math.PI/2,cs=Math.cos(t)*r2,sn=Math.sin(t)*r2;A.push(q(a.x+vx*cs+wx*sn,a.y+vy*cs+wy*sn,a.z+vz*cs+wz*sn));B.push(q(b.x+vx*cs+wx*sn,b.y+vy*cs+wy*sn,b.z+vz*cs+wz*sn))}
- add('prism',{name,L,vs:[...A,...B]},{fill,stroke});
+ const wx=uy*vz-uz*vy,wy=uz*vx-ux*vz,wz=ux*vy-uy*vx,A=[],B=[];
+ for(let i=0;i<4;i++){const t=i*Math.PI/2,c=Math.cos(t)*r,s=Math.sin(t)*r;
+  A.push(q(a.x+vx*c+wx*s,a.y+vy*c+wy*s,a.z+vz*c+wz*s));
+  B.push(q(b.x+vx*c+wx*s,b.y+vy*c+wy*s,b.z+vz*c+wz*s));
+ }
+ add('prism',{name,vs:[...A,...B]},{fill,stroke});
 }
-function cyl(name,x,y,z,r,h,fill,stroke='#93a3a9'){
- add('cyl',{name,x,y,z,r,h},{fill,stroke});
+function cyl(name,x,y,z,r,h,fill,stroke='#93a3a9'){add('cyl',{name,x,y,z,r,h},{fill,stroke});}
+function prop(name,x,y,z,angle,len=190,w=7){
+ const dx=Math.cos(angle)*len,dy=Math.sin(angle)*len;
+ add('prop',{name,x,y,z,dx,dy,w},{fill:'#26343a',stroke:'#c2cdd1'});
 }
-function prop(cx,cy,cz,ang){
- const len=190,w=7, dx=Math.cos(ang)*len,dy=Math.sin(ang)*len;
- add('prop',{cx,cy,cz,dx,dy,w},{fill:'none',stroke:'#c2cdd1'});
-}
-const armPts=[[ -230,-230],[230,-230],[-230,230],[230,230]];
-armPts.forEach(([x,y],i)=>{rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');/* propellers rendered below in the same rigid/depth-sorted pass */});
+
+const armPts=[[-230,-230],[230,-230],[-230,230],[230,230]];
+armPts.forEach(([x,y],i)=>{
+ rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');
+ box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');
+ cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');
+ prop('Propeller '+(i+1),x,y,5,i%2?Math.PI/2:0);
+});
 box('Lower carbon plate',0,0,0,160,160,5,'#18242a','#81939a');
 box('Upper carbon plate',0,0,28,160,160,5,'#2b3b42','#a0afb4');
 box('Battery',0,0,70,150,55,40,'#151f25','#d0a84f');
@@ -81,73 +89,115 @@ cyl('Camera lens',0,-31,-78,24,14,'#071216','#55e5c0');
 rod('Landing left',q(-70,0,0),q(-95,0,-120),6,'#71838b');
 rod('Landing right',q(70,0,0),q(95,0,-120),6,'#71838b');
 
-function rot(p){
- // One rigid-body transform around the assembly center. Every vertex uses this same pivot.
- const pivotZ=0;
- let x0=p.x,y0=p.y,z0=p.z-pivotZ;
- let cy=Math.cos(yaw*Math.PI/180),sy=Math.sin(yaw*Math.PI/180),cp=Math.cos(pitch*Math.PI/180),sp=Math.sin(pitch*Math.PI/180),cr=Math.cos(roll*Math.PI/180),sr=Math.sin(roll*Math.PI/180);
- let x=x0*cy-y0*sy,y=x0*sy+y0*cy,z=z0;
- let yy=y*cp-z*sp,zz=y*sp+z*cp;y=yy;z=zz;
- let xx=x*cr-y*sr,yy2=x*sr+y*cr;
- return {x:xx,y:yy2,z:zz+pivotZ};
+/*
+  SINGLE RIGID-BODY PIPELINE
+  1) Build every component in the same millimetre coordinate system.
+  2) Build ONE 3x3 rotation matrix for the whole aircraft.
+  3) Transform every vertex with that same matrix about (0,0,0).
+  4) Project only after transformation.
+  No element has its own SVG transform or screen-space rotation.
+*/
+function matrix(){
+ const y=yaw*Math.PI/180,p=pitch*Math.PI/180,r=roll*Math.PI/180;
+ const cy=Math.cos(y),sy=Math.sin(y),cp=Math.cos(p),sp=Math.sin(p),cr=Math.cos(r),sr=Math.sin(r);
+ // R = Rz(roll) * Rx(pitch) * Ry(yaw)
+ return [
+  cr*cy-sr*sp*sy, -sr*cp, cr*sy+sr*sp*cy,
+  sr*cy+cr*sp*sy,  cr*cp, sr*sy-cr*sp*cy,
+  -cp*sy,          sp,    cp*cy
+ ];
 }
-function P(p){
- const r=rot(p);
- // Orthographic projection: preserves the exact rigid-body spacing while rotating.
- return {x:C+r.x*scale0*zoom,y:CY-r.y*scale0*zoom,z:r.z};
+let M=matrix();
+function T(v){
+ return {x:M[0]*v.x+M[1]*v.y+M[2]*v.z,
+         y:M[3]*v.x+M[4]*v.y+M[5]*v.z,
+         z:M[6]*v.x+M[7]*v.y+M[8]*v.z};
+}
+function P(v){
+ const t=T(v);
+ return {x:C+t.x*SCALE*zoom,y:CY-t.y*SCALE*zoom,z:t.z};
 }
 function poly(points,style,depth){
- const e=document.createElementNS(NS,'polygon');e.setAttribute('points',points.map(P).map(a=>a.x+','+a.y).join(' '));for(const[k,v]of Object.entries(style))e.setAttribute(k,v);e.dataset.depth=depth;return e;
-}
-function line(a,b,style){
- const A=P(a),B=P(b),e=document.createElementNS(NS,'line');e.setAttribute('x1',A.x);e.setAttribute('y1',A.y);e.setAttribute('x2',B.x);e.setAttribute('y2',B.y);for(const[k,v]of Object.entries(style))e.setAttribute(k,v);e.dataset.depth=(A.z+B.z)/2;return e;
+ const e=document.createElementNS(NS,'polygon');
+ e.setAttribute('points',points.map(P).map(a=>a.x.toFixed(2)+','+a.y.toFixed(2)).join(' '));
+ for(const[k,v] of Object.entries(style))e.setAttribute(k,v);
+ e.dataset.depth=depth;
+ return e;
 }
 function render(){
+ M=matrix();
  root.innerHTML='';
  const els=[];
  for(const part of parts){
   if(part.type==='box'){
-   const v=part.data.vs, faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[4,0,3,7]];
-   faces.forEach((f,i)=>{const ps=f.map(j=>v[j]);const rr=ps.map(rot);const nz=((rr[1].x-rr[0].x)*(rr[2].y-rr[0].y)-(rr[1].y-rr[0].y)*(rr[2].x-rr[0].x));if(nz<0){const e=poly(ps,part.style,(rr.reduce((a,b)=>a+b.z,0)/4)+i*.001);els.push(e)}})
-   } else if(part.type==='prism'){
-   const v=part.data.vs, faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];
-   faces.forEach((f,i)=>{const ps=f.map(j=>v[j]);const rr=ps.map(rot);const e=poly(ps,part.style,rr.reduce((s,p)=>s+p.z,0)/4+i*.001);els.push(e)})
+   const v=part.data.vs;
+   [[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]].forEach((face,i)=>{
+    const ps=face.map(j=>v[j]),tv=ps.map(T);
+    const nz=(tv[1].x-tv[0].x)*(tv[2].y-tv[0].y)-(tv[1].y-tv[0].y)*(tv[2].x-tv[0].x);
+    if(nz<0)els.push(poly(ps,part.style,tv.reduce((s,p)=>s+p.z,0)/4+i*.0001));
+   });
+  } else if(part.type==='prism'){
+   const v=part.data.vs;
+   [[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]].forEach((face,i)=>{
+    const ps=face.map(j=>v[j]),tv=ps.map(T);
+    els.push(poly(ps,part.style,tv.reduce((s,p)=>s+p.z,0)/4+i*.0001));
+   });
   } else if(part.type==='cyl'){
-   const n=20,top=[],bot=[];for(let i=0;i<n;i++){const a=i*2*Math.PI/n;top.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z+part.data.h/2));bot.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z-part.data.h/2))}
-   els.push(poly(top,part.style,part.data.z+part.data.h/2));els.push(poly(bot,part.style,part.data.z-part.data.h/2));
-   for(let i=0;i<n;i++){const j=(i+1)%n;const rr=[top[i],top[j],bot[j],bot[i]];els.push(poly(rr,part.style,(rot(top[i]).z+rot(top[j]).z+rot(bot[i]).z+rot(bot[j]).z)/4))}
-
-   } else if(part.type==='prop'){
-   const d=part.data,a=Math.atan2(d.dy,d.dx),L=Math.hypot(d.dx,d.dy);
-   const ux=Math.cos(a),uy=Math.sin(a),vx=-uy,vy=ux;
-   const p1=q(d.cx-d.dx*.92+vx*d.w,d.cy-d.dy*.92+vy*d.w,d.cz),p2=q(d.cx+d.dx*.92+vx*d.w,d.cy+d.dy*.92+vy*d.w,d.cz);
-   const p3=q(d.cx+d.dx*.92-vx*d.w,d.cy+d.dy*.92-vy*d.w,d.cz),p4=q(d.cx-d.dx*.92-vx*d.w,d.cy-d.dy*.92-vy*d.w,d.cz);
-   const e=poly([p1,p2,p3,p4],{fill:'#26343a',stroke:part.style.stroke},d.cz);els.push(e);
+   const n=20,top=[],bot=[];
+   for(let i=0;i<n;i++){const a=i*2*Math.PI/n;
+    top.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z+part.data.h/2));
+    bot.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z-part.data.h/2));
+   }
+   els.push(poly(top,part.style,T(top[0]).z));
+   els.push(poly(bot,part.style,T(bot[0]).z));
+   for(let i=0;i<n;i++){const j=(i+1)%n,ps=[top[i],top[j],bot[j],bot[i]],tv=ps.map(T);
+    els.push(poly(ps,part.style,tv.reduce((s,p)=>s+p.z,0)/4));
+   }
+  } else if(part.type==='prop'){
+   const d=part.data,dx=d.dx,dy=d.dy,L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,vx=-uy,vy=ux,w=d.w;
+   const A=[q(d.x-dx*.95+vx*w,d.y-dy*.95+vy*w,d.z),
+            q(d.x+dx*.34+vx*w*.65,d.y+dy*.34+vy*w*.65,d.z),
+            q(d.x+dx*.95,d.y+dy*.95,d.z),
+            q(d.x+dx*.34-vx*w*.65,d.y+dy*.34-vy*w*.65,d.z),
+            q(d.x-dx*.95-vx*w,d.y-dy*.95-vy*w,d.z)];
+   const B=[q(d.x-dy*.95-vx*w,d.y+dx*.95-vy*w,d.z),
+            q(d.x-dy*.34-vx*w*.65,d.y+dx*.34-vy*w*.65,d.z),
+            q(d.x+dy*.95,d.y-dx*.95,d.z),
+            q(d.x+dy*.34+vx*w*.65,d.y-dx*.34+vy*w*.65,d.z),
+            q(d.x+dy*.95+vx*w,d.y-dx*.95+vy*w,d.z)];
+   const da=T(A.reduce((a,b)=>q(a.x+b.x,a.y+b.y,a.z+b.z),q(0,0,0))).z/5;
+   const db=T(B.reduce((a,b)=>q(a.x+b.x,a.y+b.y,a.z+b.z),q(0,0,0))).z/5;
+   els.push(poly(A,d.style,da),poly(B,d.style,db));
   }
  }
- els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
- // Propellers are part of the same depth-sorted rigid assembly, so they can never drift away from their motors.
- armPts.forEach(([x,y],i)=>{
-   const a=i%2?Math.PI/2:0, d=190, w=6;
-   const dx=Math.cos(a)*d,dy=Math.sin(a)*d, vx=-Math.sin(a),vy=Math.cos(a);
-   const bladeA=[q(x-dx*.95+vx*w,y-dy*.95+vy*w,5),q(x+dx*.35+vx*w*.65,y+dy*.35+vy*w*.65,5),q(x+dx*.95,y+dy*.95,5),q(x+dx*.35-vx*w*.65,y+dy*.35-vy*w*.65,5),q(x-dx*.95-vx*w,y-dy*.95-vy*w,5)];
-   const bladeB=[q(x-dy*.95+vx*w,y+dx*.95+vy*w,5),q(x-dy*.35+vx*w*.65,y+dx*.35+vy*w*.65,5),q(x+dy*.95,y-dx*.95,5),q(x+dy*.35-vx*w*.65,y-dx*.35-vy*w*.65,5),q(x+dy*.95,y-dx*.95,5)];
-   els.push(poly(bladeA,{fill:'#26343a',stroke:'#c2cdd1'},5),poly(bladeB,{fill:'#26343a',stroke:'#c2cdd1'},5));
- });
- els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
+ els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));
+ els.forEach(e=>root.appendChild(e));
 }
-function tick(){if(auto){yaw+=.45;render()}requestAnimationFrame(tick)}
+function tick(){if(auto){yaw=(yaw+.45)%360;render()}requestAnimationFrame(tick)}
+
 svg.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;svg.setPointerCapture(e.pointerId)});
-svg.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;yaw+=dx*.55;pitch=Math.max(-75,Math.min(75,pitch+dy*.55));render()});
-svg.addEventListener('pointerup',()=>drag=false);svg.addEventListener('pointercancel',()=>drag=false);
-let pinch=0;
-svg.addEventListener('touchstart',e=>{if(e.touches.length===2){pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)}},{passive:false});
-svg.addEventListener('touchmove',e=>{if(e.touches.length!==2)return;e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch){zoom=Math.max(.45,Math.min(1.8,zoom*(d/pinch)));render()}pinch=d},{passive:false});
+svg.addEventListener('pointermove',e=>{
+ if(!drag)return;
+ const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;
+ if(e.shiftKey)roll+=dx*.6;else{yaw+=dx*.55;pitch=Math.max(-89,Math.min(89,pitch+dy*.55))}
+ render();
+});
+svg.addEventListener('pointerup',()=>drag=false);
+svg.addEventListener('pointercancel',()=>drag=false);
 svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1.8,zoom*(e.deltaY<0?1.08:.93)));render()},{passive:false});
-document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
-document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ROTATION • TRUE PROJECTED 3D':'TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
-document.getElementById('cad').onclick=()=>{state.textContent='CAD VIEW • PARTS SHARE ONE 3D COORDINATE SYSTEM'};
-state.textContent='TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY';render();tick();
+let pinch=0;
+svg.addEventListener('touchstart',e=>{if(e.touches.length===2)pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});
+svg.addEventListener('touchmove',e=>{
+ if(e.touches.length!==2)return;e.preventDefault();
+ const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+ if(pinch){zoom=Math.max(.45,Math.min(1.8,zoom*d/pinch));render()}pinch=d;
+},{passive:false});
+
+document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='RIGID MATRIX 3D • SINGLE ASSEMBLY PIVOT'};
+document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO • SINGLE MATRIX RIGID ROTATION':'RIGID MATRIX 3D • SINGLE ASSEMBLY PIVOT'};
+document.getElementById('cad').onclick=()=>{yaw=0;pitch=0;roll=0;zoom=1;render();state.textContent='ORTHOGRAPHIC CAD • ZERO PARALLAX • RIGID ASSEMBLY'};
+state.textContent='RIGID MATRIX 3D • SINGLE ASSEMBLY PIVOT';
+render();tick();
 })();
 </script>
 </body></html>
