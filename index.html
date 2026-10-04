@@ -40,7 +40,7 @@ main{max-width:1500px;margin:auto;padding:22px}.hero{margin-bottom:15px}.eyebrow
 <div class="component" data-focus="camera">RGB-D camera <span>VISION</span></div>
 <div class="component" data-focus="power">Battery / BMS <span>POWER</span></div>
 </div>
-<div class="panel"><h2>Visualization</h2><div class="modebar"><button id="engineering">Engineering mode</button><button id="scan">LiDAR scan</button></div></div>
+<div class="panel"><h2>Visualization</h2><div class="modebar"><button id="engineering">Engineering mode</button><button id="axes">Axes</button><button id="scan">LiDAR scan</button></div></div>
 <div class="panel"><h2>System specification</h2><div class="spec">
 <div class="row"><span>Footprint</span><b>780 × 610 mm</b></div><div class="row"><span>Payload concept</span><b>20 kg</b></div><div class="row"><span>Arm reach</span><b>1.15 m</b></div><div class="row"><span>Drive</span><b>4-wheel differential</b></div><div class="row"><span>Perception</span><b>LiDAR + RGB-D</b></div>
 </div></div>
@@ -118,7 +118,10 @@ const initial=[0,-22,42,0,18,0];
 function applyJoints(){jointGroups[0].rotation.y=THREE.MathUtils.degToRad(+jointInputs[0].value);jointGroups[1].rotation.z=THREE.MathUtils.degToRad(+jointInputs[1].value);jointGroups[2].rotation.z=THREE.MathUtils.degToRad(+jointInputs[2].value);jointGroups[3].rotation.y=THREE.MathUtils.degToRad(+jointInputs[3].value);jointGroups[4].rotation.z=THREE.MathUtils.degToRad(+jointInputs[4].value);jointGroups[5].rotation.y=THREE.MathUtils.degToRad(+jointInputs[5].value);jointInputs.forEach((e,i)=>document.getElementById('v'+(i+1)).textContent=e.value+'°');const g=+document.getElementById('grip').value/100;fingerL.position.z=.1-g*.075;fingerR.position.z=-.1+g*.075}
 jointInputs.forEach(e=>e.addEventListener('input',applyJoints));document.getElementById('grip').addEventListener('input',()=>{document.getElementById('vg').textContent=document.getElementById('grip').value+'%';applyJoints()});applyJoints();
 
-let wire=false,explode=false,engineering=false,scanOn=true,t=0;
+let wire=false,explode=false,engineering=false,scanOn=true,axesOn=false,t=0;
+const axes=new THREE.AxesHelper(2.2); axes.position.set(0,.02,0); axes.visible=false; scene.add(axes);
+document.getElementById('axes').onclick=()=>{axesOn=!axesOn;axes.visible=axesOn};
+
 const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
 const selectable=[];
 robot.traverse(o=>{if(o.isMesh){o.userData.originalMaterial=o.material;selectable.push(o)}});
