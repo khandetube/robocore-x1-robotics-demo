@@ -9,7 +9,7 @@
 <main><section class="hero"><div class="ey">PHYSICAL-BUILD-ORIENTED DESIGN</div><h1>AeroQuad X4 — 650 mm Modular Quadcopter</h1><p>A complete engineering-oriented quadcopter concept: carbon-fiber frame, four propulsion modules, ESCs, flight controller, GPS/compass, power distribution, battery tray, landing gear, camera payload bay and serviceable fasteners. Every major assembly is separated so the model can be inspected and manufactured from the stated dimensions.</p></section>
 <div class="layout"><section class="viewer" id="viewer">
 <div class="static3d" aria-label="AeroQuad X4 engineering viewer">
-<svg id="quadSvg" viewBox="0 0 1000 700" role="img">
+<svg id="quadSvg" viewBox="0 0 1000 700" role="img" style="touch-action:none;cursor:grab;user-select:none">
 <defs>
  <linearGradient id="carbon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#53656d"/><stop offset=".45" stop-color="#172329"/><stop offset="1" stop-color="#070c10"/></linearGradient>
  <linearGradient id="carbon2" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#344850"/><stop offset="1" stop-color="#0b1217"/></linearGradient>
@@ -140,23 +140,26 @@
 <script>
 (function(){
 const svg=document.getElementById('quadSvg'),drone=document.getElementById('drone'),wire=document.querySelector('#drone g[fill="none"]');
-let yaw=0,pitch=0,roll=0,scale=1,down=false,lx=0,ly=0,auto=false,explode=false;
+let yaw=0,pitch=0,roll=0,scale=1,tx=0,ty=0,down=false,lx=0,ly=0,auto=false,explode=false; let pointers=new Map(),pinchStart=0,pinchScale=1;
 const state=document.getElementById('loadState');
 function apply(){
- const sx=scale*(1+Math.abs(Math.sin(yaw*Math.PI/180))*.08);
  const sy=scale*(1-Math.abs(pitch)/160);
  const sk=Math.sin(yaw*Math.PI/180)*7;
- drone.setAttribute('transform','translate(0 '+(explode?-18:0)+') rotate('+roll+' 500 365) skewX('+sk+') scale('+sx+' '+sy+')');
+ drone.setAttribute('transform','translate('+tx+' '+ty+') translate(500 365) rotate('+roll+') skewX('+sk+') scale('+scale+' '+sy+') translate(-500 -365) translate(0 '+(explode?-18:0)+')');
 }
-svg.addEventListener('pointerdown',e=>{down=true;lx=e.clientX;ly=e.clientY;svg.setPointerCapture(e.pointerId)});
-svg.addEventListener('pointermove',e=>{
- if(!down)return;
- yaw+=(e.clientX-lx)*.32; pitch=Math.max(-35,Math.min(35,pitch+(e.clientY-ly)*.20));
- lx=e.clientX;ly=e.clientY;apply();
+svg.addEventListener('pointerdown',e=>{
+ e.preventDefault(); down=true; lx=e.clientX; ly=e.clientY; svg.setPointerCapture(e.pointerId); pointers.set(e.pointerId,{x:e.clientX,y:e.clientY}); svg.style.cursor='grabbing';
+ if(pointers.size===2){const v=[...pointers.values()];pinchStart=Math.hypot(v[0].x-v[1].x,v[0].y-v[1].y);pinchScale=scale;}
 });
-svg.addEventListener('pointerup',()=>down=false);svg.addEventListener('pointercancel',()=>down=false);
-svg.addEventListener('wheel',e=>{e.preventDefault();scale=Math.max(.68,Math.min(1.34,scale*(e.deltaY<0?1.06:.94)));apply()},{passive:false});
-document.getElementById('reset').onclick=()=>{yaw=0;pitch=0;roll=0;scale=1;explode=false;apply();state.textContent='ENGINEERING VIEW • 28 ASSEMBLY FEATURES'};
+svg.addEventListener('pointermove',e=>{
+ if(!pointers.has(e.pointerId)) return; pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointers.size===2){const v=[...pointers.values()];const d=Math.hypot(v[0].x-v[1].x,v[0].y-v[1].y);scale=Math.max(.45,Math.min(2.4,pinchScale*(d/Math.max(1,pinchStart))));apply();return;}
+ if(!down)return; yaw+=(e.clientX-lx)*.42; pitch=Math.max(-55,Math.min(55,pitch+(e.clientY-ly)*.28)); lx=e.clientX;ly=e.clientY;apply();
+});
+function endPointer(e){pointers.delete(e.pointerId);if(pointers.size===0){down=false;svg.style.cursor='grab';}}
+svg.addEventListener('pointerup',endPointer);svg.addEventListener('pointercancel',endPointer);
+svg.addEventListener('wheel',e=>{e.preventDefault();scale=Math.max(.45,Math.min(2.4,scale*(e.deltaY<0?1.10:.91)));apply()},{passive:false});
+document.getElementById('reset').onclick=()=>{yaw=0;pitch=0;roll=0;scale=1;tx=0;ty=0;explode=false;apply();state.textContent='ENGINEERING VIEW • 28 ASSEMBLY FEATURES'};
 document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ORBIT • LIVE ASSEMBLY VIEW':'ENGINEERING VIEW • 28 ASSEMBLY FEATURES'};
 document.getElementById('explode').onclick=()=>{explode=!explode;state.textContent=explode?'EXPLODED ASSEMBLY • SERVICE ACCESS VIEW':'ENGINEERING VIEW • 28 ASSEMBLY FEATURES';apply()};
 document.getElementById('wire').onclick=()=>{wire.style.opacity=wire.style.opacity==='0'?'0.9':'0';state.textContent=wire.style.opacity==='0'?'WIRING HIDDEN':'WIRING HARNESS • POWER + SIGNAL ROUTES'};
