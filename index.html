@@ -183,35 +183,136 @@ apply();loop();
 })();
 </script><script>
 (()=> {
- const host=document.querySelector('.static3d'), canvas=document.createElement('canvas'); canvas.className='aeroCanvas'; host.prepend(canvas);
+ const host=document.querySelector('.static3d');
+ const old=host.querySelector('svg'); if(old) old.style.display='none';
+ const canvas=document.createElement('canvas'); canvas.className='aeroCanvas'; host.prepend(canvas);
  const ctx=canvas.getContext('2d'); let W=1,H=1,dpr=1;
- const V=(x,y,z)=>({x,y,z}), add=(a,b)=>V(a.x+b.x,a.y+b.y,a.z+b.z), parts=[];
- function box(name,c,s,group,detail=''){const [sx,sy,sz]=s,vs=[V(-sx/2,-sy/2,-sz/2),V(sx/2,-sy/2,-sz/2),V(sx/2,sy/2,-sz/2),V(-sx/2,sy/2,-sz/2),V(-sx/2,-sy/2,sz/2),V(sx/2,-sy/2,sz/2),V(sx/2,sy/2,sz/2),V(-sx/2,sy/2,sz/2)];parts.push({name,c,vs,fs:[[0,1,2,3],[4,7,6,5],[0,4,5,1],[3,2,6,7],[1,5,6,2],[0,3,7,4]],group,detail});}
- function cyl(name,c,r,h,group,detail,segments=20){const vs=[];for(let i=0;i<segments;i++){const a=i*2*Math.PI/segments;vs.push(V(Math.cos(a)*r,-h/2,Math.sin(a)*r))}for(let i=0;i<segments;i++){const a=i*2*Math.PI/segments;vs.push(V(Math.cos(a)*r,h/2,Math.sin(a)*r))}const fs=[];for(let i=0;i<segments;i++){const n=(i+1)%segments;fs.push([i,n,segments+n,segments+i])}fs.push([...Array(segments).keys()].reverse(),[...Array(segments).keys()].map(i=>segments+i));parts.push({name,c,vs,fs,group,detail});}
- function prop(name,c,r,group){const vs=[V(-r,0,-7),V(-r*.18,0,-2),V(-r*.08,0,0),V(-r*.18,0,2),V(-r,0,7),V(r*.95,0,2),V(r*.55,0,0),V(r*.95,0,-2)];parts.push({name,c,vs,fs:[[0,1,2,3,4,5,6,7]],group,detail:'15 in propeller • 381 mm'});}
- box('Lower carbon plate',V(0,0,0),[160,6,160],'frame','160×160×2.5 mm carbon plate');box('Upper carbon plate',V(0,28,0),[160,6,160],'frame','160×160×2.5 mm carbon plate');
- [[-230,-230],[230,-230],[230,230],[-230,230]].forEach(([x,z])=>box('Carbon arm',V(x/2,14,z/2),[270,16,16],'frame','16×16×1.5 mm carbon tube'));
- [[-230,-230],[230,-230],[230,230],[-230,230]].forEach(([x,z],i)=>{box('Motor mount '+(i+1),V(x,18,z),[42,5,42],'prop','42×42 mm motor mount');cyl('Motor '+(i+1),V(x,34,z),22,28,'prop','3510-class motor');cyl('Motor shaft '+(i+1),V(x,52,z),5,10,'prop','Steel motor shaft');prop('Propeller '+(i+1),V(x,59,z),190,'prop');box('ESC '+(i+1),V(x*.72,-2,z*.72),[42,10,24],'power','40–50 A ESC')});
- box('6S 5000mAh battery',V(0,58,0),[125,32,48],'power','6S 5000 mAh LiPo');box('PDB',V(0,23,0),[75,8,55],'power','Power distribution board');box('Flight controller',V(0,43,0),[42,9,42],'fc','20×20 mm mounting pattern');box('FC vibration plate',V(0,32,0),[58,4,58],'fc','Vibration isolation');
- box('GPS mast',V(0,92,0),[8,75,8],'gps','GNSS mast');cyl('GNSS compass puck',V(0,135,0),24,8,'gps','GNSS + compass');
- box('Payload rail',V(0,-62,0),[180,8,12],'camera','Payload rail');box('Gimbal yaw',V(0,-88,0),[46,20,46],'camera','Gimbal yaw stage');box('Camera body',V(0,-115,0),[58,42,48],'camera','Payload camera');cyl('Camera lens',V(0,-115,27),18,12,'camera','Optical lens');
- box('Landing skid L',V(-145,-100,0),[20,20,300],'frame','Landing gear');box('Landing skid R',V(145,-100,0),[20,20,300],'frame','Landing gear');
- let yaw=.65,pitch=-.42,roll=0,zoom=1.15,auto=false,explode=false,focus='all',drag=false,lx=0,ly=0,pointers=new Map(),pinch=0,pinchZoom=1;
- const setStatus=t=>document.getElementById('loadState').textContent=t;
- function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=Math.max(1,r.width);H=Math.max(1,r.height);canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}addEventListener('resize',resize);resize();
- function rot(p){let x=p.x,y=p.y,z=p.z,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch),cr=Math.cos(roll),sr=Math.sin(roll);let x1=x*cy-z*sy,z1=x*sy+z*cy,y2=y*cp-z1*sp,z2=y*sp+z1*cp;return{x:x1*cr-y2*sr,y:x1*sr+y2*cr,z:z2}}
- function project(p){const q=rot(p),cam=980/zoom,s=cam/(cam+q.z+520);return{x:W/2+q.x*s,y:H/2-q.y*s,z:q.z,s}}
- function rgba(g,a){return g==='frame'?'rgba(72,92,101,'+a+')':g==='prop'?'rgba(185,150,66,'+a+')':g==='power'?'rgba(41,165,137,'+a+')':g==='fc'?'rgba(54,190,170,'+a+')':g==='gps'?'rgba(85,160,220,'+a+')':'rgba(190,210,215,'+a+')'}
- function grid(){ctx.save();ctx.strokeStyle='rgba(50,90,100,.18)';ctx.lineWidth=1;for(let i=-500;i<=500;i+=50){let a=project(V(i,-160,-500)),b=project(V(i,-160,500)),c=project(V(-500,-160,i)),d=project(V(500,-160,i));ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.moveTo(c.x,c.y);ctx.lineTo(d.x,d.y);ctx.stroke()}ctx.restore()}
- function render(){ctx.clearRect(0,0,W,H);grid();const faces=[];for(const p of parts){if(focus!=='all'&&p.group!==focus)continue;let off=V(0,0,0);if(explode){const k=p.group==='frame'?0:p.group==='prop'?1.15:p.group==='power'?1.05:p.group==='fc'?1.25:p.group==='gps'?1.5:1.35;off=V(p.c.x*.16*k,p.c.y*.10*k,p.c.z*.16*k)}const pv=p.vs.map(v=>project(add(add(v,p.c),off)));for(const f of p.fs){const pts=f.map(i=>pv[i]),z=pts.reduce((s,a)=>s+a.z,0)/pts.length;faces.push({pts,z,p})}}faces.sort((a,b)=>b.z-a.z);for(const f of faces){ctx.beginPath();f.pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=rgba(f.p.group,.72);ctx.fill();ctx.strokeStyle='rgba(130,170,178,.42)';ctx.lineWidth=1;ctx.stroke()}if(focus!=='all'){ctx.fillStyle='#55e5c0';ctx.font='11px monospace';ctx.fillText('ISOLATED: '+focus.toUpperCase()+' • DETAIL INSPECTION',18,H-20)}requestAnimationFrame(render)}
+ const V=(x,y,z)=>({x,y,z}), parts=[];
+ function box(name,c,size,group,detail='',ry=0){
+   const [sx,sy,sz]=size,co=Math.cos(ry),si=Math.sin(ry);
+   const raw=[V(-sx/2,-sy/2,-sz/2),V(sx/2,-sy/2,-sz/2),V(sx/2,sy/2,-sz/2),V(-sx/2,sy/2,-sz/2),V(-sx/2,-sy/2,sz/2),V(sx/2,-sy/2,sz/2),V(sx/2,sy/2,sz/2),V(-sx/2,sy/2,sz/2)];
+   const vs=raw.map(p=>V(p.x*co+p.z*si,p.y,-p.x*si+p.z*co));
+   parts.push({name,c,vs,fs:[[0,1,2,3],[4,7,6,5],[0,4,5,1],[3,2,6,7],[1,5,6,2],[0,3,7,4]],group,detail});
+ }
+ function cyl(name,c,r,h,group,detail,segments=24){
+   const vs=[]; for(let i=0;i<segments;i++){const a=i*2*Math.PI/segments;vs.push(V(Math.cos(a)*r,-h/2,Math.sin(a)*r))}
+   for(let i=0;i<segments;i++){const a=i*2*Math.PI/segments;vs.push(V(Math.cos(a)*r,h/2,Math.sin(a)*r))}
+   const fs=[];for(let i=0;i<segments;i++){const n=(i+1)%segments;fs.push([i,n,segments+n,segments+i])}
+   fs.push([...Array(segments).keys()].reverse(),[...Array(segments).keys()].map(i=>segments+i));
+   parts.push({name,c,vs,fs,group,detail});
+ }
+ function prop(name,c,r,group){
+   const vs=[V(-r,0,-7),V(-r*.18,0,-2),V(-r*.08,0,0),V(-r*.18,0,2),V(-r,0,7),V(r*.95,0,2),V(r*.55,0,0),V(r*.95,0,-2)];
+   parts.push({name,c,vs,fs:[[0,1,2,3,4,5,6,7]],group,detail:'15 in / 381 mm propeller'});
+ }
+ // Accurate assembly coordinates: motor centers ±230 mm -> 650 mm diagonal motor-to-motor.
+ box('Lower carbon plate',V(0,0,0),[160,6,160],'frame','160×160×2.5 mm');
+ box('Upper carbon plate',V(0,28,0),[160,6,160],'frame','160×160×2.5 mm');
+ const motors=[[-230,-230],[230,-230],[230,230],[-230,230]];
+ motors.forEach(([x,z],i)=>{
+   const a=Math.atan2(z,x), L=Math.hypot(x,z);
+   box('Carbon arm '+(i+1),V(x/2,14,z/2),[L,16,16],'frame','16×16×1.5 mm carbon tube',a);
+   box('Motor mount '+(i+1),V(x,18,z),[42,5,42],'prop','42×42 mm mount');
+   cyl('Motor '+(i+1),V(x,38,z),22,28,'prop','3510-class motor');
+   cyl('Motor shaft '+(i+1),V(x,56,z),5,10,'prop','steel shaft');
+   prop('Propeller '+(i+1),V(x,64,z),190,'prop');
+   box('ESC '+(i+1),V(x*.68,-2,z*.68),[42,10,24],'power','40–50 A ESC',a);
+ });
+ box('6S 5000mAh battery',V(0,58,0),[125,32,48],'power','6S 5000 mAh LiPo');
+ box('PDB',V(0,23,0),[75,8,55],'power','power distribution board');
+ box('FC vibration plate',V(0,32,0),[58,4,58],'fc','vibration isolation plate');
+ box('Flight controller',V(0,43,0),[42,9,42],'fc','20×20 mm mounting pattern');
+ box('GPS mast',V(0,92,0),[8,75,8],'gps','GNSS mast');
+ cyl('GNSS compass puck',V(0,135,0),24,8,'gps','GNSS + compass');
+ box('Payload rail',V(0,-62,0),[180,8,12],'camera','serviceable payload rail');
+ box('Gimbal yaw',V(0,-88,0),[46,20,46],'camera','gimbal yaw stage');
+ box('Camera body',V(0,-115,0),[58,42,48],'camera','payload camera');
+ cyl('Camera lens',V(0,-115,27),18,12,'camera','optical lens');
+ box('Landing skid L',V(-145,-100,0),[20,20,300],'frame','landing gear');
+ box('Landing skid R',V(145,-100,0),[20,20,300],'frame','landing gear');
+
+ let yaw=.72,pitch=-.28,roll=0,zoom=1.05,auto=false,explode=false,focus='all';
+ let dragging=false,lx=0,ly=0,pointers=new Map(),pinch=0,pinchZoom=1;
+ const setStatus=t=>{const e=document.getElementById('loadState');if(e)e.textContent=t};
+ function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=Math.max(1,r.width);H=Math.max(1,r.height);canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+ addEventListener('resize',resize);resize();
+
+ function rotate(p){
+   let x=p.x,y=p.y,z=p.z;
+   let cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch),cr=Math.cos(roll),sr=Math.sin(roll);
+   let x1=x*cy-z*sy,z1=x*sy+z*cy;
+   let y1=y*cp-z1*sp,z2=y*sp+z1*cp;
+   return {x:x1*cr-y1*sr,y:x1*sr+y1*cr,z:z2};
+ }
+ function project(p){
+   const q=rotate(p), focal=760/zoom, depth=Math.max(180,focal+q.z+620), s=focal/depth;
+   return {x:W/2+q.x*s,y:H/2-q.y*s,z:q.z,s};
+ }
+ function color(g,a){
+   return g==='frame'?'rgba(76,96,105,'+a+')':
+          g==='prop'?'rgba(206,164,63,'+a+')':
+          g==='power'?'rgba(39,166,137,'+a+')':
+          g==='fc'?'rgba(58,205,183,'+a+')':
+          g==='gps'?'rgba(80,155,225,'+a+')':'rgba(190,210,215,'+a+')';
+ }
+ function grid(){
+   ctx.save();ctx.strokeStyle='rgba(55,95,105,.14)';ctx.lineWidth=1;
+   for(let i=-500;i<=500;i+=50){
+     const a=project(V(i,-155,-500)),b=project(V(i,-155,500)),c=project(V(-500,-155,i)),d=project(V(500,-155,i));
+     ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.moveTo(c.x,c.y);ctx.lineTo(d.x,d.y);ctx.stroke();
+   }
+   ctx.restore();
+ }
+ function render(){
+   ctx.clearRect(0,0,W,H);grid();const faces=[];
+   for(const p of parts){
+     if(focus!=='all'&&p.group!==focus)continue;
+     let off=V(0,0,0);
+     if(explode){
+       const k=p.group==='frame'?0:p.group==='prop'?1.18:p.group==='power'?1.05:p.group==='fc'?1.28:p.group==='gps'?1.5:1.38;
+       const len=Math.hypot(p.c.x,p.c.z)||1;
+       off=V(p.c.x/len*55*k,p.c.y*.10*k,p.c.z/len*55*k);
+     }
+     const pv=p.vs.map(v=>project(V(v.x+p.c.x+off.x,v.y+p.c.y+off.y,v.z+p.c.z+off.z)));
+     for(const f of p.fs){const pts=f.map(i=>pv[i]),z=pts.reduce((s,a)=>s+a.z,0)/pts.length;faces.push({pts,z,p})}
+   }
+   faces.sort((a,b)=>b.z-a.z);
+   for(const f of faces){
+     ctx.beginPath();f.pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
+     const alpha=focus==='all'?0.78:0.92;
+     ctx.fillStyle=color(f.p.group,alpha);ctx.fill();
+     ctx.strokeStyle='rgba(150,185,192,.46)';ctx.lineWidth=1;ctx.stroke();
+   }
+   if(explode){ctx.fillStyle='rgba(85,229,192,.9)';ctx.font='11px monospace';ctx.fillText('EXPLODED ASSEMBLY • COMPONENT SPACING',18,H-20)}
+   requestAnimationFrame(render);
+ }
  render();
- canvas.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const a=[...pointers.values()];pinch=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);pinchZoom=zoom}});
- canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const a=[...pointers.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);zoom=Math.max(.55,Math.min(4,pinchZoom*d/Math.max(1,pinch)));return}if(!drag)return;yaw+=(e.clientX-lx)*.009;pitch=Math.max(-1.25,Math.min(1.25,pitch+(e.clientY-ly)*.007));lx=e.clientX;ly=e.clientY});
- const end=e=>{pointers.delete(e.pointerId);if(!pointers.size)drag=false};canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.55,Math.min(4,zoom*(e.deltaY<0?1.12:.89)))},{passive:false});
- document.getElementById('reset').addEventListener('click',()=>{yaw=.65;pitch=-.42;roll=0;zoom=1.15;focus='all';explode=false;setStatus('TRUE 3D ENGINEERING VIEW • PERSPECTIVE')});
- document.getElementById('auto').addEventListener('click',()=>{auto=!auto;setStatus(auto?'AUTO ORBIT • TRUE 3D':'MANUAL 3D INSPECTION')});document.getElementById('explode').addEventListener('click',()=>{explode=!explode;setStatus(explode?'EXPLODED ASSEMBLY • COMPONENT CLEARANCE':'ASSEMBLY • COMPONENTS TOGETHER')});
- document.getElementById('axes').addEventListener('click',()=>setStatus('REFERENCE AXES • X / Y / Z • 650 MM ENVELOPE'));document.getElementById('spin').addEventListener('click',()=>{focus='prop';zoom=Math.max(1.8,zoom);setStatus('PROPULSION ISOLATED • MOTORS / ESC / 15 IN PROPS')});document.getElementById('wire').addEventListener('click',()=>setStatus('WIRING ARCHITECTURE • BATTERY → PDB → ESC → MOTOR'));document.getElementById('cad').addEventListener('click',()=>{zoom=Math.max(1.7,zoom);setStatus('CAD DETAIL MODE • FASTENERS / MOUNTS / STACK / PAYLOAD')});
- document.querySelectorAll('.part').forEach(p=>p.addEventListener('click',()=>{focus=p.dataset.f;zoom=Math.max(1.45,zoom);setStatus('ISOLATED '+p.querySelector('b').textContent+' • ROTATE + ZOOM TO INSPECT')}));
- function tick(){if(auto)yaw+=.006;requestAnimationFrame(tick)}tick();window.addEventListener('keydown',e=>{if(e.key==='0'){focus='all';zoom=1.15}if(e.key==='1')focus='frame';if(e.key==='2')focus='prop';if(e.key==='3')focus='power';if(e.key==='4')focus='fc';if(e.key==='5')focus='gps';if(e.key==='6')focus='camera'});
+
+ canvas.addEventListener('pointerdown',e=>{
+   e.preventDefault();pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});canvas.setPointerCapture(e.pointerId);
+   if(pointers.size===1){dragging=true;lx=e.clientX;ly=e.clientY}
+   if(pointers.size===2){dragging=false;const a=[...pointers.values()];pinch=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);pinchZoom=zoom}
+ });
+ canvas.addEventListener('pointermove',e=>{
+   if(!pointers.has(e.pointerId))return;e.preventDefault();pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+   if(pointers.size===2){const a=[...pointers.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);zoom=Math.max(.45,Math.min(5,pinchZoom*d/Math.max(1,pinch)));return}
+   if(!dragging)return;
+   yaw+=(e.clientX-lx)*.012;pitch=Math.max(-1.35,Math.min(1.35,pitch+(e.clientY-ly)*.009));lx=e.clientX;ly=e.clientY;
+ });
+ const end=e=>{pointers.delete(e.pointerId);if(!pointers.size)dragging=false;if(pointers.size===1){const a=[...pointers.values()][0];lx=a.x;ly=a.y;dragging=true}};
+ canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
+ canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(5,zoom*(e.deltaY<0?1.13:.88)))},{passive:false});
+
+ const reset=()=>{yaw=.72;pitch=-.28;roll=0;zoom=1.05;focus='all';explode=false;setStatus('3D ASSEMBLY • READY FOR INSPECTION')};
+ document.getElementById('reset').addEventListener('click',reset);
+ document.getElementById('auto').addEventListener('click',()=>{auto=!auto;setStatus(auto?'AUTO ORBIT • 3D ASSEMBLY':'MANUAL ROTATION • 3D ASSEMBLY')});
+ document.getElementById('explode').addEventListener('click',()=>{explode=!explode;setStatus(explode?'EXPLODED VIEW • COMPONENTS SEPARATED':'ASSEMBLED VIEW • FIXED COMPONENT RELATIONSHIPS')});
+ document.getElementById('axes').addEventListener('click',()=>setStatus('X/Y/Z REFERENCE • 650 MM MOTOR-TO-MOTOR'));
+ document.getElementById('spin').addEventListener('click',()=>{focus='prop';zoom=Math.max(1.5,zoom);setStatus('PROPULSION ISOLATED • 4 MOTORS + 4 ESC + 4 PROPS')});
+ document.getElementById('wire').addEventListener('click',()=>setStatus('POWER PATH • BATTERY → PDB → ESC → MOTOR'));
+ document.getElementById('cad').addEventListener('click',()=>{focus='frame';zoom=Math.max(1.35,zoom);setStatus('CAD DETAIL • FRAME / MOUNTS / 20×20 FC STACK')});
+ document.querySelectorAll('.part').forEach(p=>p.addEventListener('click',()=>{focus=p.dataset.f;zoom=Math.max(1.35,zoom);setStatus('ISOLATED • '+p.querySelector('b').textContent+' • DRAG TO ROTATE / PINCH TO ZOOM')}));
+ window.addEventListener('keydown',e=>{if(e.key==='0')reset();if(e.key==='1')focus='frame';if(e.key==='2')focus='prop';if(e.key==='3')focus='power';if(e.key==='4')focus='fc';if(e.key==='5')focus='gps';if(e.key==='6')focus='camera'});
+ function tick(){if(auto)yaw+=.004;requestAnimationFrame(tick)}tick();
 })();
 </script></main></body></html>
