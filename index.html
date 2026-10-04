@@ -79,6 +79,11 @@ function wire(name,a,b,color){
 function foot(name,x,y){
  cyl(name,x,y,-121,13,8,'#202b30','#7d8b90');
 }
+function clampBlock(name,x,y,z){
+ box(name,x,y,z,34,26,10,'#46565d','#a9b6bb');
+ bolt(name+' bolt 1',x-12,y-8,z+6); bolt(name+' bolt 2',x+12,y-8,z+6);
+ bolt(name+' bolt 3',x-12,y+8,z+6); bolt(name+' bolt 4',x+12,y+8,z+6);
+}
 
 function strap(name,x,y,z,w,h){box(name,x,y,z,w,h,4,'#343f45','#9aa6aa')}
 function escDetail(i,x,y){
@@ -90,7 +95,8 @@ function escDetail(i,x,y){
 }
 armPts.forEach(([x,y],i)=>{
  motorHub('Motor hub '+(i+1),x,y,-37);
- foot('Landing foot '+(i+1),i<2?-95:95,0);
+ clampBlock('Arm clamp '+(i+1),x*.32,y*.32,10);
+ foot('Landing foot '+(i+1),x*.38,y*.38);
  wire('Motor phase lead '+(i+1),q(x*.9,y*.9,-15),q(x*.72,y*.72,18),'#b24d4d');
  wire('Arm signal cable '+(i+1),q(x*.82,y*.82,2),q(x*.35,y*.35,30),'#d0a54a');
  escDetail(i+1,x,y);
@@ -103,6 +109,7 @@ armPts.forEach(([x,y],i)=>{
 strap('Battery strap front',0,-25,92,158,7);
 strap('Battery strap rear',0,25,92,158,7);
 box('Battery tray',0,0,62,158,62,4,'#35444a','#93a0a5');
+strap('Battery buckle left',-55,0,95,12,16); strap('Battery buckle right',55,0,95,12,16);
 box('XT60 connector',82,0,64,18,14,10,'#d39a32','#f0c86a');
 wire('Battery cable positive',q(75,0,64),q(20,0,47),'#c34d4d');
 wire('Battery cable negative',q(-75,0,64),q(-20,0,47),'#242b2e');
@@ -117,8 +124,10 @@ cyl('Gimbal yaw ring',0,0,-58,34,8,'#9b7437','#d5b86b');
 
 box('Lower carbon plate',0,0,0,160,160,5,'#18242a','#81939a');
 box('Upper carbon plate',0,0,28,160,160,5,'#2b3b42','#a0afb4');
+[[-68,-68],[68,-68],[-68,68],[68,68]].forEach((p,i)=>bolt('Plate bolt '+(i+1),p[0],p[1],31));
 box('Battery',0,0,70,150,55,40,'#151f25','#d0a84f');
 box('PDB',0,0,43,95,55,8,'#9d7025','#e3c46b');box('PDB terminal',0,0,49,42,18,5,'#3a4a50','#aab8bd');
+box('BEC module',0,32,46,34,18,7,'#27373d','#9aa9ae'); wire('BEC lead',q(0,32,50),q(0,15,48),'#d0a54a');
 box('Flight controller',0,0,54,76,45,8,'#116553','#70e4cf');
 rod('GPS mast',q(0,0,30),q(0,0,120),4,'#9daeb5');
 cyl('GNSS compass',0,0,130,30,12,'#17242a','#55e5c0');
@@ -190,7 +199,7 @@ svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1
 document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE RIGID 3D • ORTHOGRAPHIC ASSEMBLY'};
 document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ROTATION • TRUE PROJECTED 3D':'TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
 document.getElementById('cad').onclick=()=>{state.textContent='CAD VIEW • PARTS SHARE ONE 3D COORDINATE SYSTEM'};
-state.textContent='TRUE RIGID 3D • FIXED FRAME PIVOT • 3-AXIS';render();tick();
+state.textContent='TRUE RIGID 3D • SINGLE ASSEMBLY TRANSFORM • 3-AXIS';render();tick();
 })();
 </script>
 </body></html>
