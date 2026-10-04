@@ -19,41 +19,11 @@ main{max-width:1500px;margin:auto;padding:16px}.hero h1{margin:0 0 4px;font-size
 <section class="hero"><h1>Engineering Digital Twin</h1><p>Visible-first SVG assembly. No WebGL, Canvas, external libraries or external model files are required for the model to appear.</p></section>
 <div class="layout">
 <section class="viewer" id="viewer">
-<svg id="scene" viewBox="0 0 1000 700" aria-label="AeroQuad X4 quadcopter">
+<svg id="scene" viewBox="0 0 1000 700" aria-label="AeroQuad X4 true projected 3D viewer">
 <rect width="1000" height="700" fill="#03070a"/>
-<g stroke="#17303a" stroke-width="1" opacity=".45"><path d="M80 560H920M80 520H920M80 480H920M80 440H920M80 400H920M80 360H920"/><path d="M120 560L300 350M220 560L350 350M320 560L400 350M420 560L450 350M520 560L550 350M620 560L600 350M720 560L650 350M820 560L700 350"/></g>
-<ellipse cx="500" cy="548" rx="350" ry="42" fill="#000" opacity=".65"/>
-<g id="model">
-<!-- landing gear -->
-<g fill="none" stroke="#71838b" stroke-width="12" stroke-linecap="round"><path d="M390 390L335 530H405"/><path d="M610 390L665 530H595"/></g>
-<!-- arms -->
-<g fill="none" stroke="#0a1116" stroke-width="34" stroke-linecap="round"><path d="M450 360L190 190"/><path d="M550 360L810 190"/><path d="M450 395L190 540"/><path d="M550 395L810 540"/></g>
-<g fill="none" stroke="#53666e" stroke-width="23" stroke-linecap="round"><path d="M450 360L190 190"/><path d="M550 360L810 190"/><path d="M450 395L190 540"/><path d="M550 395L810 540"/></g>
-<g fill="none" stroke="#93a3a9" stroke-width="2"><path d="M440 353L200 195"/><path d="M560 353L800 195"/><path d="M440 402L200 535"/><path d="M560 402L800 535"/></g>
-<!-- center plates -->
-<polygon points="380,330 500,292 620,330 655,390 620,450 500,488 380,450 345,390" fill="#0b1217" stroke="#7e9097" stroke-width="5"/>
-<polygon points="397,335 500,302 603,335 633,390 603,440 500,475 397,440 367,390" fill="#25353c" stroke="#53676f" stroke-width="3"/>
-<!-- battery -->
-<rect x="422" y="255" width="156" height="55" rx="8" fill="#151f25" stroke="#c59a42" stroke-width="3"/><text x="500" y="289" fill="#e1eaed" text-anchor="middle" font-size="13" font-family="monospace">6S 5000mAh</text>
-<!-- PDB and FC -->
-<rect x="450" y="337" width="100" height="48" rx="5" fill="#9d7025" stroke="#e2bf66" stroke-width="3"/><text x="500" y="366" fill="#10181b" text-anchor="middle" font-size="12" font-weight="700">PDB</text>
-<rect x="462" y="395" width="76" height="50" rx="5" fill="#116553" stroke="#70e4cf" stroke-width="2"/><text x="500" y="425" fill="#d9fffa" text-anchor="middle" font-size="12" font-weight="700">FC</text>
-<!-- GPS -->
-<path d="M500 300V160" stroke="#9daeb5" stroke-width="6"/><ellipse cx="500" cy="150" rx="38" ry="13" fill="#17242a" stroke="#55e5c0" stroke-width="3"/><circle cx="500" cy="148" r="8" fill="#55e5c0"/><text x="540" y="153" fill="#55e5c0" font-size="12">GNSS / COMPASS</text>
-<!-- camera -->
-<path d="M450 462H550L535 530H465Z" fill="#202d33" stroke="#89999f" stroke-width="3"/><circle cx="500" cy="493" r="27" fill="#061014" stroke="#55e5c0" stroke-width="4"/><circle cx="500" cy="493" r="12" fill="#17484c"/><path d="M420 535H580" stroke="#c69b42" stroke-width="7"/><text x="600" y="505" fill="#d6ae5a" font-size="11">PAYLOAD / CAMERA</text>
-<!-- motors and props -->
-<g stroke="#293a42" stroke-width="4">
-<g transform="translate(190 190)"><circle r="37" fill="#10191e"/><circle r="26" fill="#718087"/><circle r="9" fill="#1d292f"/><circle r="31" fill="none" stroke="#d0ad59" stroke-width="3" stroke-dasharray="3 7"/></g>
-<g transform="translate(810 190)"><circle r="37" fill="#10191e"/><circle r="26" fill="#718087"/><circle r="9" fill="#1d292f"/><circle r="31" fill="none" stroke="#d0ad59" stroke-width="3" stroke-dasharray="3 7"/></g>
-<g transform="translate(190 540)"><circle r="37" fill="#10191e"/><circle r="26" fill="#718087"/><circle r="9" fill="#1d292f"/><circle r="31" fill="none" stroke="#d0ad59" stroke-width="3" stroke-dasharray="3 7"/></g>
-<g transform="translate(810 540)"><circle r="37" fill="#10191e"/><circle r="26" fill="#718087"/><circle r="9" fill="#1d292f"/><circle r="31" fill="none" stroke="#d0ad59" stroke-width="3" stroke-dasharray="3 7"/></g></g>
-<g fill="none" stroke="#b8c4c9" stroke-width="4" opacity=".85"><ellipse cx="190" cy="190" rx="92" ry="12"/><ellipse cx="190" cy="190" rx="12" ry="92"/><ellipse cx="810" cy="190" rx="92" ry="12"/><ellipse cx="810" cy="190" rx="12" ry="92"/><ellipse cx="190" cy="540" rx="92" ry="12"/><ellipse cx="190" cy="540" rx="12" ry="92"/><ellipse cx="810" cy="540" rx="92" ry="12"/><ellipse cx="810" cy="540" rx="12" ry="92"/></g>
-<!-- engineering dimensions -->
-<g fill="none" stroke="#55e5c0" stroke-width="2"><path d="M190 620H810M190 612V628M810 612V628"/><path d="M190 620l14-6M190 620l14 6M810 620l-14-6M810 620l-14 6"/><path d="M105 190V540M97 190h16M97 540h16"/></g>
-<g fill="#55e5c0" font-family="monospace" font-size="12"><text x="500" y="646" text-anchor="middle">650.0 mm MOTOR-TO-MOTOR</text><text x="78" y="380" transform="rotate(-90 78 380)">650.0 mm</text></g>
-<g fill="#b9c8ce" font-size="12"><text x="125" y="120" font-size="20" fill="#55e5c0" font-weight="700">AeroQuad X4</text><text x="125" y="140">4 × 3510 • 15 in • 6S • 20×20 FC</text><text x="125" y="175">M1</text><text x="825" y="175" text-anchor="end">M2</text><text x="125" y="575">M3</text><text x="825" y="575" text-anchor="end">M4</text></g>
-</g></svg>
+<g id="grid" stroke="#17303a" stroke-width="1" opacity=".45"><path d="M80 560H920M80 520H920M80 480H920M80 440H920M80 400H920M80 360H920"/></g>
+<g id="model3d"></g>
+</svg>
 <div class="overlay"><div class="badge" id="state">STATIC SVG MODEL • 28 ASSEMBLY FEATURES</div><div class="tools"><button id="reset">Reset</button><button id="auto">Auto</button><button id="cad">CAD</button></div></div>
 <div class="hint">Drag = rotate · Wheel / pinch = zoom · model remains visible without JavaScript</div>
 </section>
@@ -64,15 +34,96 @@ main{max-width:1500px;margin:auto;padding:16px}.hero h1{margin:0 0 4px;font-size
 <div class="panel"><h2>Architecture</h2><div class="spec"><div><span>Power</span><b>Battery → PDB → ESC</b></div><div><span>Control</span><b>FC → ESC signals</b></div><div><span>Navigation</span><b>GNSS → FC</b></div><div><span>Payload</span><b>Rail → Gimbal</b></div></div></div>
 </aside></div></main>
 <script>
-(()=>{const s=document.getElementById('scene'),m=document.getElementById('model'),st=document.getElementById('state');let x=0,y=0,z=1,down=false,lx=0,ly=0,auto=false;
-function draw(){m.setAttribute('transform',`translate(500 365) rotate(${x*.12}) skewX(${Math.sin(x*Math.PI/180)*9}) scale(${z} ${z*(1-Math.min(55,Math.abs(y))*.003)}) translate(-500 -365)`)}
-s.addEventListener('pointerdown',e=>{down=true;lx=e.clientX;ly=e.clientY;s.classList.add('drag');s.setPointerCapture(e.pointerId)});
-s.addEventListener('pointermove',e=>{if(!down)return;x+=e.clientX-lx;y=Math.max(-55,Math.min(55,y+(e.clientY-ly)*.35));lx=e.clientX;ly=e.clientY;draw()});
-s.addEventListener('pointerup',()=>{down=false;s.classList.remove('drag')});s.addEventListener('pointercancel',()=>{down=false;s.classList.remove('drag')});
-s.addEventListener('wheel',e=>{e.preventDefault();z=Math.max(.55,Math.min(1.8,z*(e.deltaY<0?1.08:.93)));draw()},{passive:false});
-document.getElementById('reset').onclick=()=>{x=0;y=0;z=1;draw();st.textContent='STATIC SVG MODEL • 28 ASSEMBLY FEATURES'};
-document.getElementById('auto').onclick=()=>{auto=!auto;st.textContent=auto?'AUTO ROTATION • SVG ASSEMBLY':'STATIC SVG MODEL • 28 ASSEMBLY FEATURES'};
-document.getElementById('cad').onclick=()=>{st.textContent='CAD REFERENCE • 650 / 160 / 20 / 381 mm'};
-(function loop(){if(auto){x+=.35;draw()}requestAnimationFrame(loop)})();draw()})();
+(()=> {
+const NS='http://www.w3.org/2000/svg', svg=document.getElementById('scene'), root=document.getElementById('model3d'), state=document.getElementById('state');
+const V=1000, C=500, CY=365, scale0=0.72;
+let yaw=-35,pitch=22,roll=0,zoom=1,drag=false,lx=0,ly=0,auto=false;
+const parts=[];
+const add=(type,data,style={})=>parts.push({type,data,style});
+const q=(x,y,z)=>({x,y,z});
+function box(name,cx,cy,cz,w,h,d,fill,stroke='#8ea0a7'){
+ const x=w/2,y=h/2,z=d/2, vs=[q(cx-x,cy-y,cz-z),q(cx+x,cy-y,cz-z),q(cx+x,cy+y,cz-z),q(cx-x,cy+y,cz-z),q(cx-x,cy-y,cz+z),q(cx+x,cy-y,cz+z),q(cx+x,cy+y,cz+z),q(cx-x,cy+y,cz+z)];
+ add('box',{name,vs}, {fill,stroke});
+}
+function rod(name,a,b,r,fill,stroke='#65777f'){
+ const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,L=Math.hypot(dx,dy,dz)||1;
+ const ux=dx/L,uy=dy/L,uz=dz/L;
+ let ax=Math.abs(uz)<.9?0:1, ay=Math.abs(uz)<.9?0:1, az=Math.abs(uz)<.9?1:0;
+ let vx=uy*az-uz*ay,vy=uz*ax-ux*az,vz=ux*ay-uy*ax,vl=Math.hypot(vx,vy,vz)||1;vx/=vl;vy/=vl;vz/=vl;
+ let wx=uy*vz-uz*vy,wy=uz*vx-ux*vz,wz=ux*vy-uy*vx,wl=Math.hypot(wx,wy,wz)||1;wx/=wl;wy/=wl;wz/=wl;
+ const n=(s,t)=>q((a.x+b.x)/2+vx*r*s+wx*r*t,(a.y+b.y)/2+vy*r*s+wy*r*t,(a.z+b.z)/2+vz*r*s+wz*r*t);
+ add('prism',{name,L,vs:[n(-1,-1),n(1,-1),n(1,1),n(-1,1),q(a.x+vx*r+wx*r,a.y+vy*r+wy*r,a.z+vz*r+wz*r),q(a.x-vx*r+wx*r,a.y-vy*r+wy*r,a.z-vz*r+wz*r)]},{fill,stroke});
+}
+function cyl(name,x,y,z,r,h,fill,stroke='#93a3a9'){
+ add('cyl',{name,x,y,z,r,h},{fill,stroke});
+}
+function prop(cx,cy,cz,ang){
+ const len=190,w=7, dx=Math.cos(ang)*len,dy=Math.sin(ang)*len;
+ add('prop',{cx,cy,cz,dx,dy,w},{fill:'none',stroke:'#c2cdd1'});
+}
+const armPts=[[ -230,-230],[230,-230],[-230,230],[230,230]];
+armPts.forEach(([x,y],i)=>{rod('Arm '+(i+1),q(0,0,0),q(x,y,0),12,'#53666e','#a5b4b9');box('Motor mount '+(i+1),x,y,0,42,42,18,'#26363d');cyl('Motor '+(i+1),x,y,-18,31,36,'#111b20','#d0ad59');prop(x,y,5,i%2?Math.PI/2:0)});
+box('Lower carbon plate',0,0,0,160,160,5,'#18242a','#81939a');
+box('Upper carbon plate',0,0,28,160,160,5,'#2b3b42','#a0afb4');
+box('Battery',0,0,70,150,55,40,'#151f25','#d0a84f');
+box('PDB',0,0,43,95,55,8,'#9d7025','#e3c46b');
+box('Flight controller',0,0,54,76,45,8,'#116553','#70e4cf');
+rod('GPS mast',q(0,0,30),q(0,0,120),4,'#9daeb5');
+cyl('GNSS compass',0,0,130,30,12,'#17242a','#55e5c0');
+box('Payload rail',0,0,-48,180,12,12,'#c69b42','#e0c278');
+box('Camera body',0,0,-78,82,58,55,'#202d33','#89999f');
+cyl('Camera lens',0,-31,-78,24,14,'#071216','#55e5c0');
+rod('Landing left',q(-70,0,0),q(-95,0,-120),6,'#71838b');
+rod('Landing right',q(70,0,0),q(95,0,-120),6,'#71838b');
+
+function rot(p){
+ let cy=Math.cos(yaw*Math.PI/180),sy=Math.sin(yaw*Math.PI/180),cp=Math.cos(pitch*Math.PI/180),sp=Math.sin(pitch*Math.PI/180),cr=Math.cos(roll*Math.PI/180),sr=Math.sin(roll*Math.PI/180);
+ let x=p.x*cy-p.y*sy,y=p.x*sy+p.y*cy,z=p.z;
+ let yy=y*cp-z*sp,zz=y*sp+z*cp;y=yy;z=zz;
+ let xx=x*cr-y*sr,yy2=x*sr+y*cr;
+ return {x:xx,y:yy2,z:zz};
+}
+function P(p){
+ const r=rot(p), f=650, s=f/(f+r.z*1.2);
+ return {x:C+r.x*s*scale0*zoom,y:CY-r.y*s*scale0*zoom,z:r.z};
+}
+function poly(points,style,depth){
+ const e=document.createElementNS(NS,'polygon');e.setAttribute('points',points.map(P).map(a=>a.x+','+a.y).join(' '));for(const[k,v]of Object.entries(style))e.setAttribute(k,v);e.dataset.depth=depth;return e;
+}
+function line(a,b,style){
+ const A=P(a),B=P(b),e=document.createElementNS(NS,'line');e.setAttribute('x1',A.x);e.setAttribute('y1',A.y);e.setAttribute('x2',B.x);e.setAttribute('y2',B.y);for(const[k,v]of Object.entries(style))e.setAttribute(k,v);e.dataset.depth=(A.z+B.z)/2;return e;
+}
+function render(){
+ root.innerHTML='';
+ const els=[];
+ for(const part of parts){
+  if(part.type==='box'){
+   const v=part.data.vs, faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[4,0,3,7]];
+   faces.forEach((f,i)=>{const ps=f.map(j=>v[j]);const rr=ps.map(rot);const nz=((rr[1].x-rr[0].x)*(rr[2].y-rr[0].y)-(rr[1].y-rr[0].y)*(rr[2].x-rr[0].x));if(nz<0){const e=poly(ps,part.style,(rr.reduce((a,b)=>a+b.z,0)/4)+i*.001);els.push(e)}})
+  } else if(part.type==='prism'){
+   const v=part.data.vs; const e=poly(v.slice(0,4),part.style,v.reduce((a,b)=>a+rot(b).z,0)/4);els.push(e);
+  } else if(part.type==='cyl'){
+   const n=20,top=[],bot=[];for(let i=0;i<n;i++){const a=i*2*Math.PI/n;top.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z+part.data.h/2));bot.push(q(part.data.x+Math.cos(a)*part.data.r,part.data.y+Math.sin(a)*part.data.r,part.data.z-part.data.h/2))}
+   els.push(poly(top,part.style,part.data.z+part.data.h/2));els.push(poly(bot,part.style,part.data.z-part.data.h/2));
+  } else if(part.type==='prop'){
+   const d=part.data, a=Math.atan2(d.dy,d.dx),px=Math.cos(a+Math.PI/2)*d.w,py=Math.sin(a+Math.PI/2)*d.w;
+   els.push(line(q(d.cx-d.dx,d.cy-d.dy,d.cz),q(d.cx+d.dx,d.cy+d.dy,d.cz),{stroke:d.style.stroke,'stroke-width':3,'stroke-linecap':'round'}));
+   els.push(line(q(d.cx-dy?0:0,d.cy,d.cz),q(d.cx,d.cy,d.cz),{stroke:'none'}));
+  } else if(part.type==='prism'){}
+ }
+ els.sort((a,b)=>Number(a.dataset.depth)-Number(b.dataset.depth));els.forEach(e=>root.appendChild(e));
+ // propeller blades as separate, correctly attached to each motor center
+ armPts.forEach(([x,y],i)=>{const a=i%2?Math.PI/2:0;const d=190,w=6;const dx=Math.cos(a)*d,dy=Math.sin(a)*d;root.appendChild(line(q(x-dx,y-dy,5),q(x+dx,y+dy,5),{stroke:'#c2cdd1','stroke-width':3,'stroke-linecap':'round'}));root.appendChild(line(q(x-dy*.75,y+dx*.75,5),q(x+dy*.75,y-dx*.75,5),{stroke:'#c2cdd1','stroke-width':3,'stroke-linecap':'round'}));});
+}
+function tick(){if(auto){yaw+=.45;render()}requestAnimationFrame(tick)}
+svg.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;svg.setPointerCapture(e.pointerId)});
+svg.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;yaw+=dx*.55;pitch=Math.max(-75,Math.min(75,pitch+dy*.55));render()});
+svg.addEventListener('pointerup',()=>drag=false);svg.addEventListener('pointercancel',()=>drag=false);
+svg.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.45,Math.min(1.8,zoom*(e.deltaY<0?1.08:.93)));render()},{passive:false});
+document.getElementById('reset').onclick=()=>{yaw=-35;pitch=22;roll=0;zoom=1;render();state.textContent='TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
+document.getElementById('auto').onclick=()=>{auto=!auto;state.textContent=auto?'AUTO ROTATION • TRUE PROJECTED 3D':'TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY'};
+document.getElementById('cad').onclick=()=>{state.textContent='CAD VIEW • PARTS SHARE ONE 3D COORDINATE SYSTEM'};
+state.textContent='TRUE PROJECTED 3D • INDEPENDENT PART GEOMETRY';render();tick();
+})();
 </script>
 </body></html>
