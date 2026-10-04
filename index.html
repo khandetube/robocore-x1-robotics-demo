@@ -25,7 +25,7 @@
 <script>
 const loadState=document.getElementById("loadState"); const host=document.getElementById('viewer'),scene=new THREE.Scene();scene.background=new THREE.Color(0x05090d);scene.fog=new THREE.Fog(0x05090d,4,13);
 const camera=new THREE.PerspectiveCamera(42,1,.03,40);camera.position.set(4.1,3.0,4.7);
-if(typeof THREE==="undefined"){throw new Error("Three.js CDN did not load");} if(!THREE.WEBGL.isWebGLAvailable?.()){throw new Error("WebGL unavailable");} const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.shadowMap.enabled=true;host.appendChild(renderer.domElement);
+if(typeof THREE==="undefined"){throw new Error("Three.js CDN did not load");} let renderer; try{renderer=new THREE.WebGLRenderer({antialias:true});}catch(err){throw new Error("WebGL unavailable: "+err.message);}renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.shadowMap.enabled=true;host.appendChild(renderer.domElement);
 const orbit=new OrbitControls(camera,renderer.domElement);orbit.target.set(0,.15,0);orbit.enableDamping=true;orbit.minDistance=2;orbit.maxDistance=9;
 scene.add(new THREE.HemisphereLight(0xb9d9e8,0x10151a,2.2));const key=new THREE.DirectionalLight(0xffffff,3.4);key.position.set(4,7,4);key.castShadow=true;scene.add(key);const rim=new THREE.PointLight(0x55e5c0,16,8);rim.position.set(-3,2,-2);scene.add(rim);
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(14,14),new THREE.MeshStandardMaterial({color:0x070c11,roughness:.72}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);const grid=new THREE.GridHelper(14,28,0x1a2b34,0x101a21);grid.position.y=-.65;scene.add(grid);
